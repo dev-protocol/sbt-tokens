@@ -1,7 +1,7 @@
 {
-	"name": "template-repos-ts-sol",
+	"name": "@devprotocol/sbt-tokens",
 	"version": "1.0.0",
-	"description": "Template repository for using TypeScript and Solidity",
+	"description": "Repository containing code of the SBT tokens.",
 	"main": "index.js",
 	"scripts": {
 		"test": "hardhat test",
