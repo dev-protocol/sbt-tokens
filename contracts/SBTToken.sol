@@ -32,7 +32,7 @@ contract SBTToken is
 	}
 
 	function initialize(address _minter) external initializer {
-		__ERC721_init("Dev Protocol sTokens V1", "DEV-STOKENS-V1");
+		__ERC721_init("Dev Protocol SBT V1", "DEV-SBT-V1");
 		minter = _minter;
 	}
 
