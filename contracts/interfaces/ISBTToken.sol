@@ -22,10 +22,7 @@ interface ISBTToken {
 	 * @param _tokenId The token for which we are setting the image uri.
 	 * @param _data The data that is used as uri.
 	 */
-	function setTokenURIImage(
-		uint256 _tokenId,
-		string memory _data
-	) external;
+	function setTokenURIImage(uint256 _tokenId, string memory _data) external;
 
 	/*
 	 * @dev get token ids by owner

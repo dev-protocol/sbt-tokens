@@ -56,7 +56,13 @@ contract SBTToken is
 	/**
 	 * @dev See {IERC721Enumerable-totalSupply}.
 	 */
-	function totalSupply() public view virtual override(ISBTToken, IERC721EnumerableUpgradeable) returns (uint256) {
+	function totalSupply()
+		public
+		view
+		virtual
+		override(ISBTToken, IERC721EnumerableUpgradeable)
+		returns (uint256)
+	{
 		return tokenIdCounter.current();
 	}
 
@@ -66,7 +72,13 @@ contract SBTToken is
 	function tokenOfOwnerByIndex(
 		address _owner,
 		uint256 index
-	) public view virtual override(ISBTToken, IERC721EnumerableUpgradeable) returns (uint256) {
+	)
+		public
+		view
+		virtual
+		override(ISBTToken, IERC721EnumerableUpgradeable)
+		returns (uint256)
+	{
 		// solhint-disable-next-line reason-string
 		require(
 			index < tokenIdsMapOfOwner[_owner].length(),
@@ -80,7 +92,13 @@ contract SBTToken is
 	 */
 	function tokenByIndex(
 		uint256 index
-	) public view virtual override(ISBTToken, IERC721EnumerableUpgradeable) returns (uint256) {
+	)
+		public
+		view
+		virtual
+		override(ISBTToken, IERC721EnumerableUpgradeable)
+		returns (uint256)
+	{
 		// solhint-disable-next-line reason-string
 		require(
 			index < tokenIdCounter.current(),
