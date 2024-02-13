@@ -153,7 +153,7 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 		string memory sbtAttributes = "";
 
 		if (stringDataPresent) {
-			for (uint256 i = 0; i <= stringAttributes.length - 1; i++) {
+			for (uint256 i = 0; i < stringAttributes.length; i++) {
 				string memory attributeInString = string(
 					abi.encodePacked(
 						'{"trait_type": "',
@@ -194,7 +194,11 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 				if (i == 0) {
 					if (stringDataPresent) {
 						sbtAttributes = string(
-							abi.encodePacked(",", attributeInString)
+							abi.encodePacked(
+								sbtAttributes,
+								",",
+								attributeInString
+							)
 						);
 					} else {
 						sbtAttributes = attributeInString;
