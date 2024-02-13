@@ -1,53 +1,44 @@
 // SPDX-License-Identifier: MPL-2.0
 pragma solidity =0.8.9;
 
-import {Counters} from "@openzeppelin/contracts/utils/Counters.sol";
+import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import {Base64} from "@devprotocol/util-contracts/contracts/utils/Base64.sol";
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
-import {EnumerableSet} from "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
+import {AddressLib} from "@devprotocol/util-contracts/contracts/utils/AddressLib.sol";
 import {ERC721EnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 
 import {ISBTToken} from "./interfaces/ISBTToken.sol";
+import {DecimalString} from "./libs/DecimalString.sol";
 
 contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
+	using Base64 for bytes;
+	using Strings for uint256;
+	using AddressLib for address;
+	using DecimalString for uint256;
+
 	/// @dev EOA with minting rights.
-	address private minter;
+	address private _minter;
 	/// @dev Account with proxy adming rights.
-	address private proxyAdmin;
+	address private _proxyAdmin;
+
 	/// @dev Holds the URI information of a SBT token.
-	mapping(uint256 => string) private tokenUriImage;
+	mapping(uint256 => string) private _tokenUriImage;
+	/// @dev Holds the generic metadata and attribute information of a SBT token.
+	mapping(uint256 => Metadata) private _tokenMetadata;
 
 	modifier onlyMinter() {
-		require(minter == _msgSender(), "Illegal access");
+		require(_minter == _msgSender(), "Illegal access");
 		_;
 	}
 
-	event SetProxyAdmin(address _proxyAdmin);
-
-	function initialize(address _minter) external initializer {
-		__ERC721_init("Dev Protocol SBT V1", "DEV-SBT-V1");
-		minter = _minter;
-	}
-
-	function setProxyAdmin(address _proxyAdmin) external {
-		require(proxyAdmin == address(0), "Already set");
-		proxyAdmin = _proxyAdmin;
-		emit SetProxyAdmin(_proxyAdmin);
-	}
-
-	function setTokenURIImage(
-		uint256 _tokenId,
-		string memory _data
-	) external override onlyMinter {
-		tokenUriImage[_tokenId] = _data;
-	}
-
-	function mint(
-		address _owner
-	) external override onlyMinter returns (uint256 tokenId_) {
-		uint256 currentId = this.currentIndex();
-		_mint(_owner, currentId);
-		emit Minted(currentId, _owner);
-		return currentId;
+	function _setTokenURI(
+		uint256 tokenId,
+		Metadata memory tokenMetadata,
+		string memory tokenUriImage
+	) private {
+		_tokenMetadata[tokenId] = tokenMetadata;
+		_tokenUriImage[tokenId] = tokenUriImage;
+		emit SetSBTTokenURI(tokenId, abi.encode(tokenMetadata, tokenUriImage));
 	}
 
 	function _beforeTokenTransfer(
@@ -71,22 +62,54 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 		}
 	}
 
-	function _tokenURI(uint256 _tokenId) private view returns (string memory) {
-		return tokenUriImage[_tokenId];
+	function initialize(address minter) external initializer {
+		__ERC721_init("Dev Protocol SBT V1", "DEV-SBT-V1");
+		_minter = minter;
 	}
 
-	function owner() external view returns (address) {
-		return ProxyAdmin(proxyAdmin).owner();
+	function setProxyAdmin(address proxyAdmin) external {
+		require(_proxyAdmin == address(0), "Already set");
+		_proxyAdmin = proxyAdmin;
+		emit SetProxyAdmin(proxyAdmin);
+	}
+
+	function setTokenURI(
+		uint256 tokenId,
+		Metadata memory tokenMetadata,
+		string memory tokenUriImage
+	) external override onlyMinter {
+		require(tokenId < currentIndex(), "Token not found");
+		_setTokenURI(tokenId, tokenMetadata, tokenUriImage);
+	}
+
+	function mint(
+		address to,
+		Metadata memory tokenMetadata,
+		string memory tokenUriImage
+	) external override onlyMinter returns (uint256 tokenId_) {
+		uint256 currentId = currentIndex();
+		_mint(to, currentId);
+		emit Minted(currentId, to);
+		_setTokenURI(currentId, tokenMetadata, tokenUriImage);
+		return currentId;
+	}
+
+	function _tokenURI(uint256 tokenId) private view returns (string memory) {
+		return _tokenUriImage[tokenId];
 	}
 
 	function tokenURI(
-		uint256 _tokenId
+		uint256 tokenId
 	) public view override returns (string memory) {
-		return _tokenURI(_tokenId);
+		return _tokenURI(tokenId);
 	}
 
-	function currentIndex() external view override returns (uint256) {
+	function currentIndex() public view override returns (uint256) {
 		return super.totalSupply();
+	}
+
+	function owner() external view returns (address) {
+		return ProxyAdmin(_proxyAdmin).owner();
 	}
 
 	function tokensOfOwner(
