@@ -16,12 +16,12 @@ interface ISBTToken {
 	}
 
 	/// @dev Data strucutre to represent all generic metadata of the SBT.
-	struct Metadata {
+	struct SBTData {
 		string name;
 		string image;
 		string description;
-		bytes stringAttributes;
-		bytes NumberAttributes;
+		bytes stringAttributesEncoded;
+		bytes numberAttributesEncoded;
 	}
 
 	/*
@@ -53,7 +53,10 @@ interface ISBTToken {
 	 */
 	function mint(
 		address _owner,
-		Metadata memory metadata,
+		string memory name,
+		string memory description,
+		StringAttribute[] memory stringAttributes,
+		NumberAttribute[] memory numberAttributes,
 		string memory tokenURIImage
 	) external returns (uint256);
 
@@ -68,7 +71,10 @@ interface ISBTToken {
 	 */
 	function setTokenURI(
 		uint256 _tokenId,
-		Metadata memory metadata,
+		string memory name,
+		string memory description,
+		StringAttribute[] memory stringAttributes,
+		NumberAttribute[] memory numberAttributes,
 		string memory tokenURIImage
 	) external;
 

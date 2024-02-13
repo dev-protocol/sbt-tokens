@@ -21,10 +21,8 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 	/// @dev Account with proxy adming rights.
 	address private _proxyAdmin;
 
-	/// @dev Holds the URI information of a SBT token.
-	mapping(uint256 => string) private _tokenUriImage;
 	/// @dev Holds the generic metadata and attribute information of a SBT token.
-	mapping(uint256 => Metadata) private _tokenMetadata;
+	mapping(uint256 => SBTData) private _sbtdata;
 
 	modifier onlyMinter() {
 		require(_minter == _msgSender(), "Illegal access");
@@ -33,12 +31,23 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 
 	function _setTokenURI(
 		uint256 tokenId,
-		Metadata memory tokenMetadata,
+		string memory name,
+		string memory description,
+		StringAttribute[] memory stringAttributes,
+		NumberAttribute[] memory numberAttributes,
 		string memory tokenUriImage
 	) private {
-		_tokenMetadata[tokenId] = tokenMetadata;
-		_tokenUriImage[tokenId] = tokenUriImage;
-		emit SetSBTTokenURI(tokenId, abi.encode(tokenMetadata, tokenUriImage));
+		bytes memory stringAttributesEncoded = abi.encode(stringAttributes);
+		bytes memory numberAttributesEncoded = abi.encode(numberAttributes);
+		SBTData memory sbtData = SBTData({
+			name: name,
+			image: tokenUriImage,
+			description: description,
+			stringAttributesEncoded: stringAttributesEncoded,
+			numberAttributesEncoded: numberAttributesEncoded
+		});
+		_sbtdata[tokenId] = sbtData;
+		emit SetSBTTokenURI(tokenId, abi.encode(sbtData, tokenUriImage));
 	}
 
 	function _beforeTokenTransfer(
@@ -75,27 +84,47 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 
 	function setTokenURI(
 		uint256 tokenId,
-		Metadata memory tokenMetadata,
+		string memory name,
+		string memory description,
+		StringAttribute[] memory stringAttributes,
+		NumberAttribute[] memory numberAttributes,
 		string memory tokenUriImage
 	) external override onlyMinter {
 		require(tokenId < currentIndex(), "Token not found");
-		_setTokenURI(tokenId, tokenMetadata, tokenUriImage);
+		_setTokenURI(
+			tokenId,
+			name,
+			description,
+			stringAttributes,
+			numberAttributes,
+			tokenUriImage
+		);
 	}
 
 	function mint(
 		address to,
-		Metadata memory tokenMetadata,
+		string memory name,
+		string memory description,
+		StringAttribute[] memory stringAttributes,
+		NumberAttribute[] memory numberAttributes,
 		string memory tokenUriImage
 	) external override onlyMinter returns (uint256 tokenId_) {
 		uint256 currentId = currentIndex();
 		_mint(to, currentId);
 		emit Minted(currentId, to);
-		_setTokenURI(currentId, tokenMetadata, tokenUriImage);
+		_setTokenURI(
+			currentId,
+			name,
+			description,
+			stringAttributes,
+			numberAttributes,
+			tokenUriImage
+		);
 		return currentId;
 	}
 
 	function _tokenURI(uint256 tokenId) private view returns (string memory) {
-		return _tokenUriImage[tokenId];
+		return string(bytes(abi.encode(_sbtdata[tokenId])));
 	}
 
 	function tokenURI(
