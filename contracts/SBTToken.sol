@@ -121,89 +121,63 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 
 	function _tokenURI(uint256 tokenId) private view returns (string memory) {
 		SBTData memory sbtData = _sbtdata[tokenId];
-		(
-			bool stringDataPresent,
-			StringAttribute[] memory stringAttributes
-		) = sbtData.stringAttributesEncoded.length > 0
-				? (
-					true,
-					abi.decode(
-						sbtData.stringAttributesEncoded,
-						(StringAttribute[])
-					)
-				)
-				: (false, new StringAttribute[](0));
-		(
-			bool numberDataPresent,
-			NumberAttribute[] memory numberAttributes
-		) = sbtData.numberAttributesEncoded.length > 0
-				? (
-					true,
-					abi.decode(
-						sbtData.numberAttributesEncoded,
-						(NumberAttribute[])
-					)
-				)
-				: (false, new NumberAttribute[](0));
 
+		StringAttribute[] memory stringAttributes = abi.decode(
+			sbtData.stringAttributesEncoded,
+			(StringAttribute[])
+		);
+
+		NumberAttribute[] memory numberAttributes = abi.decode(
+			sbtData.numberAttributesEncoded,
+			(NumberAttribute[])
+		);
+
+		bool isStringDataPresent = false;
 		string memory sbtAttributes = "";
 
-		if (stringDataPresent) {
-			for (uint256 i = 0; i < stringAttributes.length; i++) {
-				string memory attributeInString = string(
-					abi.encodePacked(
-						'{"trait_type": "',
-						stringAttributes[i].trait_type,
-						'",',
-						' "value": "',
-						stringAttributes[i].value,
-						'"}'
-					)
-				);
+		for (uint256 i = 0; i < stringAttributes.length; i++) {
+			string memory attributeInString = string(
+				abi.encodePacked(
+					"{'trait_type': '",
+					stringAttributes[i].trait_type,
+					"',",
+					" 'value': '",
+					stringAttributes[i].value,
+					"'}"
+				)
+			);
 
-				if (i == 0) {
-					sbtAttributes = attributeInString;
-				} else {
-					sbtAttributes = string(
-						abi.encodePacked(sbtAttributes, ",", attributeInString)
-					);
-				}
+			if (i == 0) {
+				isStringDataPresent = true;
+				sbtAttributes = attributeInString;
+			} else {
+				sbtAttributes = string(
+					abi.encodePacked(sbtAttributes, ",", attributeInString)
+				);
 			}
 		}
 
-		if (numberDataPresent) {
-			for (uint256 i = 0; i < numberAttributes.length; i++) {
-				string memory attributeInString = string(
-					abi.encodePacked(
-						'{"trait_type": "',
-						numberAttributes[i].trait_type,
-						'",',
-						' "display_type": "',
-						numberAttributes[i].display_type,
-						'",',
-						' "value": "',
-						numberAttributes[i].value.toString(),
-						'"}'
-					)
-				);
+		for (uint256 i = 0; i < numberAttributes.length; i++) {
+			string memory attributeInString = string(
+				abi.encodePacked(
+					"{'trait_type': '",
+					numberAttributes[i].trait_type,
+					"',",
+					" 'display_type': '",
+					numberAttributes[i].display_type,
+					"',",
+					" 'value': '",
+					numberAttributes[i].value.toString(),
+					"'}"
+				)
+			);
 
-				if (i == 0) {
-					if (stringDataPresent) {
-						sbtAttributes = string(
-							abi.encodePacked(
-								sbtAttributes,
-								",",
-								attributeInString
-							)
-						);
-					} else {
-						sbtAttributes = attributeInString;
-					}
-				} else {
-					sbtAttributes = string(
-						abi.encodePacked(sbtAttributes, ",", attributeInString)
-					);
-				}
+			if (i == 0 && !isStringDataPresent) {
+				sbtAttributes = attributeInString;
+			} else {
+				sbtAttributes = string(
+					abi.encodePacked(sbtAttributes, ",", attributeInString)
+				);
 			}
 		}
 
