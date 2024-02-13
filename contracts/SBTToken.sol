@@ -113,12 +113,12 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 	}
 
 	function tokensOfOwner(
-		address _owner
+		address tokenOwner
 	) external view override returns (uint256[] memory) {
-		uint256 length = super.balanceOf(_owner);
+		uint256 length = super.balanceOf(tokenOwner);
 		uint256[] memory tokens = new uint256[](length);
 		for (uint256 i = 0; i < length; i++) {
-			tokens[i] = super.tokenOfOwnerByIndex(_owner, i);
+			tokens[i] = super.tokenOfOwnerByIndex(tokenOwner, i);
 		}
 		return tokens;
 	}
