@@ -156,7 +156,7 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 				sbtAttributes = attributeInString;
 			} else {
 				sbtAttributes = string(
-					abi.encodePacked(sbtAttributes, ",", attributeInString)
+					abi.encodePacked(sbtAttributes, ", ", attributeInString)
 				);
 			}
 		}
@@ -186,7 +186,7 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 				sbtAttributes = attributeInString;
 			} else {
 				sbtAttributes = string(
-					abi.encodePacked(sbtAttributes, ",", attributeInString)
+					abi.encodePacked(sbtAttributes, ", ", attributeInString)
 				);
 			}
 		}
