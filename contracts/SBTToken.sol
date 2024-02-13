@@ -4,17 +4,13 @@ pragma solidity =0.8.9;
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {Base64} from "@devprotocol/util-contracts/contracts/utils/Base64.sol";
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
-import {AddressLib} from "@devprotocol/util-contracts/contracts/utils/AddressLib.sol";
 import {ERC721EnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 
 import {ISBTToken} from "./interfaces/ISBTToken.sol";
-import {DecimalString} from "./libs/DecimalString.sol";
 
 contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 	using Base64 for bytes;
 	using Strings for uint256;
-	using AddressLib for address;
-	using DecimalString for uint256;
 
 	/// @dev EOA with minting rights.
 	address private _minter;
