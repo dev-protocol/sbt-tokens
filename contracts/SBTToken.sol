@@ -138,12 +138,16 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 		for (uint256 i = 0; i < stringAttributes.length; i++) {
 			string memory attributeInString = string(
 				abi.encodePacked(
-					"{'trait_type': '",
+					// solhint-disable-next-line quotes
+					'{"trait_type": "',
 					stringAttributes[i].trait_type,
-					"',",
-					" 'value': '",
+					// solhint-disable-next-line quotes
+					'",',
+					// solhint-disable-next-line quotes
+					' "value": "',
 					stringAttributes[i].value,
-					"'}"
+					// solhint-disable-next-line quotes
+					'"}'
 				)
 			);
 
@@ -160,15 +164,21 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 		for (uint256 i = 0; i < numberAttributes.length; i++) {
 			string memory attributeInString = string(
 				abi.encodePacked(
-					"{'trait_type': '",
+					// solhint-disable-next-line quotes
+					'{"trait_type": "',
 					numberAttributes[i].trait_type,
-					"',",
-					" 'display_type': '",
+					// solhint-disable-next-line quotes
+					'",',
+					// solhint-disable-next-line quotes
+					' "display_type": "',
 					numberAttributes[i].display_type,
-					"',",
-					" 'value': '",
+					// solhint-disable-next-line quotes
+					'",',
+					// solhint-disable-next-line quotes
+					' "value": "',
 					numberAttributes[i].value.toString(),
-					"'}"
+					// solhint-disable-next-line quotes
+					'"}'
 				)
 			);
 
