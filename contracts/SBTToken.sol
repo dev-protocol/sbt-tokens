@@ -124,7 +124,113 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 	}
 
 	function _tokenURI(uint256 tokenId) private view returns (string memory) {
-		return string(bytes(abi.encode(_sbtdata[tokenId])));
+		SBTData memory sbtData = _sbtdata[tokenId];
+		(bool stringDataPresent, StringAttribute[] memory stringAttributes) = sbtData.stringAttributesEncoded.length > 0
+			? (true, abi.decode(sbtData.stringAttributesEncoded, (StringAttribute[])))
+			: (false, new StringAttribute[](0));
+		(bool numberDataPresent, NumberAttribute[] memory numberAttributes) = sbtData.numberAttributesEncoded.length > 0
+			? (true, abi.decode(sbtData.numberAttributesEncoded, (NumberAttribute[])))
+			: (false, new NumberAttribute[](0));
+
+		string memory sbtAttributes = "";
+
+		if (stringDataPresent) {
+			for (uint256 i = 0; i <= stringAttributes.length - 1; i++) {
+				string memory attributeInString = string(
+					abi.encodePacked(
+						'{"trait_type": "',
+						stringAttributes[i].trait_type,
+						'",',
+						' "value": "',
+						stringAttributes[i].value,
+						'"}'
+					)
+				);
+
+				if (i == 0) {
+					sbtAttributes = attributeInString;
+				} else {
+					sbtAttributes = string(
+						abi.encodePacked(
+							sbtAttributes,
+							",",
+							attributeInString
+						)
+					);
+				}
+			}
+		}
+
+		if (numberDataPresent) {
+			for (uint256 i = 0; i < numberAttributes.length; i++) {
+				string memory attributeInString = string(
+					abi.encodePacked(
+						'{"trait_type": "',
+						numberAttributes[i].trait_type,
+						'",',
+						' "display_type": "',
+						numberAttributes[i].display_type,
+						'",',
+						' "value": "',
+						numberAttributes[i].value.toString(),
+						'"}'
+					)
+				);
+
+				if (i == 0) {
+					if (stringDataPresent) {
+						sbtAttributes = string(
+							abi.encodePacked(
+								",",
+								attributeInString
+							)
+						);
+					} else {
+						sbtAttributes = attributeInString;
+					}
+				} else {
+					sbtAttributes = string(
+						abi.encodePacked(
+							sbtAttributes,
+							",",
+							attributeInString
+						)
+					);
+				}
+			}
+		}
+
+		sbtAttributes = string(
+			abi.encodePacked(
+				"[",
+				sbtAttributes,
+				"]"
+			)
+		);
+
+		return
+			string(
+				abi.encodePacked(
+					"data:application/json;base64,",
+					abi
+						.encodePacked(
+							// solhint-disable-next-line quotes
+							'{"name":"',
+							sbtData.name,
+							// solhint-disable-next-line quotes
+							'", "description":"',
+							sbtData.description,
+							// solhint-disable-next-line quotes
+							'", "image": "',
+							sbtData.image,
+							// solhint-disable-next-line quotes
+							'", "attributes":',
+							sbtAttributes,
+							"}"
+						)
+						.encode()
+				)
+			);
 	}
 
 	function tokenURI(
