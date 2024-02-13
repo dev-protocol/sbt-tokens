@@ -125,12 +125,30 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 
 	function _tokenURI(uint256 tokenId) private view returns (string memory) {
 		SBTData memory sbtData = _sbtdata[tokenId];
-		(bool stringDataPresent, StringAttribute[] memory stringAttributes) = sbtData.stringAttributesEncoded.length > 0
-			? (true, abi.decode(sbtData.stringAttributesEncoded, (StringAttribute[])))
-			: (false, new StringAttribute[](0));
-		(bool numberDataPresent, NumberAttribute[] memory numberAttributes) = sbtData.numberAttributesEncoded.length > 0
-			? (true, abi.decode(sbtData.numberAttributesEncoded, (NumberAttribute[])))
-			: (false, new NumberAttribute[](0));
+		(
+			bool stringDataPresent,
+			StringAttribute[] memory stringAttributes
+		) = sbtData.stringAttributesEncoded.length > 0
+				? (
+					true,
+					abi.decode(
+						sbtData.stringAttributesEncoded,
+						(StringAttribute[])
+					)
+				)
+				: (false, new StringAttribute[](0));
+		(
+			bool numberDataPresent,
+			NumberAttribute[] memory numberAttributes
+		) = sbtData.numberAttributesEncoded.length > 0
+				? (
+					true,
+					abi.decode(
+						sbtData.numberAttributesEncoded,
+						(NumberAttribute[])
+					)
+				)
+				: (false, new NumberAttribute[](0));
 
 		string memory sbtAttributes = "";
 
@@ -151,11 +169,7 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 					sbtAttributes = attributeInString;
 				} else {
 					sbtAttributes = string(
-						abi.encodePacked(
-							sbtAttributes,
-							",",
-							attributeInString
-						)
+						abi.encodePacked(sbtAttributes, ",", attributeInString)
 					);
 				}
 			}
@@ -180,33 +194,20 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 				if (i == 0) {
 					if (stringDataPresent) {
 						sbtAttributes = string(
-							abi.encodePacked(
-								",",
-								attributeInString
-							)
+							abi.encodePacked(",", attributeInString)
 						);
 					} else {
 						sbtAttributes = attributeInString;
 					}
 				} else {
 					sbtAttributes = string(
-						abi.encodePacked(
-							sbtAttributes,
-							",",
-							attributeInString
-						)
+						abi.encodePacked(sbtAttributes, ",", attributeInString)
 					);
 				}
 			}
 		}
 
-		sbtAttributes = string(
-			abi.encodePacked(
-				"[",
-				sbtAttributes,
-				"]"
-			)
-		);
+		sbtAttributes = string(abi.encodePacked("[", sbtAttributes, "]"));
 
 		return
 			string(
