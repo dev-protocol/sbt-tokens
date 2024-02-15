@@ -14,6 +14,8 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 
 	/// @dev Account with proxy adming rights.
 	address private _proxyAdmin;
+	/// @dev EOA with rights to allow(add)/disallow(remove) minter.
+	address private _minterUpdater;
 
 	/// @dev EOA with minting rights.
 	mapping(address => bool) private _minters;
@@ -22,6 +24,11 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 
 	modifier onlyMinter() {
 		require(_minters[_msgSender()], "Illegal access");
+		_;
+	}
+
+	modifier onlyMinterUpdater() {
+		require(_msgSender() == _minterUpdater, "Not minter updater");
 		_;
 	}
 
@@ -51,9 +58,13 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 		}
 	}
 
-	function initialize(address[] memory minters) external initializer {
+	function initialize(
+		address minterUpdater,
+		address[] memory minters
+	) external initializer {
 		__ERC721_init("Dev Protocol SBT V1", "DEV-SBT-V1");
 
+		_minterUpdater = minterUpdater;
 		for (uint256 i = 0; i < minters.length; i++) {
 			_minters[minters[i]] = true;
 		}
@@ -63,6 +74,16 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 		require(_proxyAdmin == address(0), "Already set");
 		_proxyAdmin = proxyAdmin;
 		emit SetProxyAdmin(proxyAdmin);
+	}
+
+	function addMinter(address minter) external override onlyMinterUpdater {
+		_minters[minter] = true;
+		emit MinterAdded(minter);
+	}
+
+	function removeMinter(address minter) external override onlyMinterUpdater {
+		_minters[minter] = false;
+		emit MinterRemoved(minter);
 	}
 
 	function setTokenURI(

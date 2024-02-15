@@ -36,6 +36,18 @@ interface ISBTToken {
 	event SetSBTTokenURI(uint256 tokenId, bytes data);
 
 	/*
+	 * @dev The event fired when a EOA is given minter right.
+	 * @param minter The address given the minter right.
+	 */
+	event MinterAdded(address minter);
+
+	/*
+	 * @dev The event fired when a EOA is revoked from minter right.
+	 * @param minter The address revoked the minter right.
+	 */
+	event MinterRemoved(address minter);
+
+	/*
 	 * @dev Creates the new staking position for the caller.
 	 * Mint must be called by the minter address.
 	 * @param _owner The address of the owner of the new SBT.
@@ -45,6 +57,20 @@ interface ISBTToken {
 		address _owner,
 		bytes memory metadata
 	) external returns (uint256);
+
+	/*
+	 * @dev Gives minter rights to EOA.
+	 * @notice must be called by the minterUpdater address.
+	 * @param minter The address who is to be given the minting rights.
+	 */
+	function addMinter(address minter) external;
+
+	/*
+	 * @dev Revokes minter rights to EOA.
+	 * @notice must be called by the minterUpdater address.
+	 * @param minter The address who is to be revoked from the minting rights.
+	 */
+	function removeMinter(address minter) external;
 
 	/*
 	 * @dev Sets the token URI image for a token.
