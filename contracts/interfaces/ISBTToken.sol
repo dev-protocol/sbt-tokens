@@ -79,6 +79,23 @@ interface ISBTToken {
 	) external;
 
 	/*
+	 * @dev Get the NFT metadata in encoded format.
+	 * @param name The name of the NFT.
+	 * @param description The description of the NFT.
+	 * @param stringAttributes The array of all the string attributes.
+	 * @param numberAttributes The array of all the number attributes.
+	 * param tokenUriImage The token image data or url.
+	 * @return bytes The encoded metadata bytes.
+	 */
+	function encodeMetadata(
+		string memory name,
+		string memory description,
+		StringAttribute[] memory stringAttributes,
+		NumberAttribute[] memory numberAttributes,
+		string memory tokenUriImage
+	) external pure returns (bytes memory);
+
+	/*
 	 * @dev get token ids by owner
 	 * @param _owner owner address
 	 * @return uint256[] token id list

@@ -218,6 +218,23 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 			);
 	}
 
+	function encodeMetadata(
+		string memory name,
+		string memory description,
+		StringAttribute[] memory stringAttributes,
+		NumberAttribute[] memory numberAttributes,
+		string memory tokenUriImage
+	) public pure override returns (bytes memory) {
+		return
+			abi.encode(
+				name,
+				description,
+				tokenUriImage,
+				stringAttributes,
+				numberAttributes
+			);
+	}
+
 	function tokenURI(
 		uint256 tokenId
 	) public view override returns (string memory) {
