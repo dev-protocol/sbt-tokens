@@ -17,33 +17,17 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 	/// @dev Account with proxy adming rights.
 	address private _proxyAdmin;
 
-	/// @dev Holds the generic metadata and attribute information of a SBT token.
-	mapping(uint256 => SBTData) private _sbtdata;
+	/// @dev Holds the encoded metadata of a SBT token.
+	mapping(uint256 => bytes) private _sbtdata;
 
 	modifier onlyMinter() {
 		require(_minter == _msgSender(), "Illegal access");
 		_;
 	}
 
-	function _setTokenURI(
-		uint256 tokenId,
-		string memory name,
-		string memory description,
-		StringAttribute[] memory stringAttributes,
-		NumberAttribute[] memory numberAttributes,
-		string memory tokenUriImage
-	) private {
-		bytes memory stringAttributesEncoded = abi.encode(stringAttributes);
-		bytes memory numberAttributesEncoded = abi.encode(numberAttributes);
-		SBTData memory sbtData = SBTData({
-			name: name,
-			image: tokenUriImage,
-			description: description,
-			stringAttributesEncoded: stringAttributesEncoded,
-			numberAttributesEncoded: numberAttributesEncoded
-		});
-		_sbtdata[tokenId] = sbtData;
-		emit SetSBTTokenURI(tokenId, abi.encode(sbtData, tokenUriImage));
+	function _setTokenURI(uint256 tokenId, bytes memory metadata) private {
+		_sbtdata[tokenId] = metadata;
+		emit SetSBTTokenURI(tokenId, metadata);
 	}
 
 	function _beforeTokenTransfer(
@@ -80,57 +64,34 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 
 	function setTokenURI(
 		uint256 tokenId,
-		string memory name,
-		string memory description,
-		StringAttribute[] memory stringAttributes,
-		NumberAttribute[] memory numberAttributes,
-		string memory tokenUriImage
+		bytes memory metadata
 	) external override onlyMinter {
 		require(tokenId < currentIndex(), "Token not found");
-		_setTokenURI(
-			tokenId,
-			name,
-			description,
-			stringAttributes,
-			numberAttributes,
-			tokenUriImage
-		);
+		_setTokenURI(tokenId, metadata);
 	}
 
 	function mint(
 		address to,
-		string memory name,
-		string memory description,
-		StringAttribute[] memory stringAttributes,
-		NumberAttribute[] memory numberAttributes,
-		string memory tokenUriImage
+		bytes memory metadata
 	) external override onlyMinter returns (uint256 tokenId_) {
 		uint256 currentId = currentIndex();
 		_mint(to, currentId);
 		emit Minted(currentId, to);
-		_setTokenURI(
-			currentId,
-			name,
-			description,
-			stringAttributes,
-			numberAttributes,
-			tokenUriImage
-		);
+		_setTokenURI(currentId, metadata);
 		return currentId;
 	}
 
 	function _tokenURI(uint256 tokenId) private view returns (string memory) {
-		SBTData memory sbtData = _sbtdata[tokenId];
-
-		StringAttribute[] memory stringAttributes = abi.decode(
-			sbtData.stringAttributesEncoded,
-			(StringAttribute[])
-		);
-
-		NumberAttribute[] memory numberAttributes = abi.decode(
-			sbtData.numberAttributesEncoded,
-			(NumberAttribute[])
-		);
+		(
+			string memory name,
+			string memory description,
+			string memory tokenUriImage,
+			StringAttribute[] memory stringAttributes,
+			NumberAttribute[] memory numberAttributes
+		) = abi.decode(
+				_sbtdata[tokenId],
+				(string, string, string, StringAttribute[], NumberAttribute[])
+			);
 
 		bool isStringDataPresent = false;
 		string memory sbtAttributes = "";
@@ -201,13 +162,13 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 						.encodePacked(
 							// solhint-disable-next-line quotes
 							'{"name":"',
-							sbtData.name,
+							name,
 							// solhint-disable-next-line quotes
 							'", "description":"',
-							sbtData.description,
+							description,
 							// solhint-disable-next-line quotes
 							'", "image": "',
-							sbtData.image,
+							tokenUriImage,
 							// solhint-disable-next-line quotes
 							'", "attributes":',
 							sbtAttributes,

@@ -15,15 +15,6 @@ interface ISBTToken {
 		uint256 value;
 	}
 
-	/// @dev Data strucutre to represent all generic metadata of the SBT.
-	struct SBTData {
-		string name;
-		string image;
-		string description;
-		bytes stringAttributesEncoded;
-		bytes numberAttributesEncoded;
-	}
-
 	/*
 	 * @dev The event fired when a token is minted.
 	 * @param tokenId The ID of the created SBT.
@@ -48,35 +39,20 @@ interface ISBTToken {
 	 * @dev Creates the new staking position for the caller.
 	 * Mint must be called by the minter address.
 	 * @param _owner The address of the owner of the new SBT.
-	 * @param metadata The tokenURI data of the new SBT.
-	 * @param tokenUriImage The link for the image of the SBT.
+	 * @param metadata The encoded metadata of the SBT.
 	 */
 	function mint(
 		address _owner,
-		string memory name,
-		string memory description,
-		StringAttribute[] memory stringAttributes,
-		NumberAttribute[] memory numberAttributes,
-		string memory tokenURIImage
+		bytes memory metadata
 	) external returns (uint256);
 
 	/*
 	 * @dev Sets the token URI image for a token.
 	 * @notice must be called by the minter address.
 	 * @param _tokenId The token for which we are setting the image uri.
-	 * @param metadata The generic metadata of the SBT (e.g name, description).
-	 * @param stringAttributes The string attributes that form the SBT.
-	 * @param numericAttributes The numeric attributes that form the SBT.
-	 * @param tokenUriImage The link for the image of the SBT.
+	 * @param bytes The encoded metadata of the NFT.
 	 */
-	function setTokenURI(
-		uint256 _tokenId,
-		string memory name,
-		string memory description,
-		StringAttribute[] memory stringAttributes,
-		NumberAttribute[] memory numberAttributes,
-		string memory tokenURIImage
-	) external;
+	function setTokenURI(uint256 _tokenId, bytes memory metadata) external;
 
 	/*
 	 * @dev Get the NFT metadata in encoded format.
