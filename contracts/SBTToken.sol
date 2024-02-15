@@ -21,7 +21,7 @@ contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
 	mapping(uint256 => bytes) private _sbtdata;
 
 	modifier onlyMinter() {
-		require( _minters[_msgSender()], "Illegal access");
+		require(_minters[_msgSender()], "Illegal access");
 		_;
 	}
 
