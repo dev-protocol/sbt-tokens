@@ -6,9 +6,9 @@ import {Base64} from "@devprotocol/util-contracts/contracts/utils/Base64.sol";
 import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 import {ERC721EnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 
-import {ISBTToken} from "./interfaces/ISBTToken.sol";
+import {ISBT} from "./interfaces/ISBT.sol";
 
-contract SBTToken is ISBTToken, ERC721EnumerableUpgradeable {
+contract SBT is ISBT, ERC721EnumerableUpgradeable {
 	using Base64 for bytes;
 	using Strings for uint256;
 

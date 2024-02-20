@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MPL-2.0
 pragma solidity ^0.8.9;
 
-interface ISBTToken {
+interface ISBT {
 	/// @dev Data strucutre to represent all String attributes of the SBT.
 	struct StringAttribute {
 		string trait_type;
