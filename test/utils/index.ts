@@ -51,10 +51,28 @@ type Signers = {
 	minterUpdater: SignerWithAddress
 	minterA: SignerWithAddress
 	minterB: SignerWithAddress
+	minterC: SignerWithAddress
 }
 
 export const getSigners = async (): Promise<Signers> => {
-	const [deployer, proxyAdmin, userA, userB, minterUpdater, minterA, minterB] =
-		await ethers.getSigners()
-	return { deployer, proxyAdmin, userA, userB, minterUpdater, minterA, minterB }
+	const [
+		deployer,
+		proxyAdmin,
+		userA,
+		userB,
+		minterUpdater,
+		minterA,
+		minterB,
+		minterC,
+	] = await ethers.getSigners()
+	return {
+		deployer,
+		proxyAdmin,
+		userA,
+		userB,
+		minterUpdater,
+		minterA,
+		minterB,
+		minterC,
+	}
 }
