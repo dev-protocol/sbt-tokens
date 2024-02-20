@@ -71,4 +71,28 @@ describe('SBT', () => {
 			).to.revertedWith('Not minter updater')
 		})
 	})
+
+	describe('removeMinter', () => {
+		it('The removeMinter function can be executed by minterUpdater', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+			await expect(
+				sbt.connect(signers.minterUpdater).removeMinter(signers.minterA.address)
+			)
+				.to.emit(sbt, 'MinterRemoved')
+				.withArgs(signers.minterA.address)
+		})
+
+		it('The removeMinter function can only be executed by minterUpdater', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+			await expect(sbt.removeMinter(signers.minterA.address)).to.revertedWith(
+				'Not minter updater'
+			)
+
+			await expect(
+				sbt.connect(signers.proxyAdmin).removeMinter(signers.minterA.address)
+			).to.revertedWith('Not minter updater')
+		})
+	})
 })
