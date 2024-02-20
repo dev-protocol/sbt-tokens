@@ -18,7 +18,7 @@ describe('SBT', () => {
 	}
 
 	describe('initialize', () => {
-		it('The initialize function can only be executed once.', async () => {
+		it('The initialize function can only be executed once', async () => {
 			const sbt = await init()
 			await expect(
 				sbt.initialize(constants.AddressZero, [
@@ -30,7 +30,7 @@ describe('SBT', () => {
 	})
 
 	describe('setProxyAdmin', () => {
-		it('The setProxyAdmin function can only be executed once.', async () => {
+		it('The setProxyAdmin function should execute once', async () => {
 			const sbt = await init()
 			const signers = await getSigners()
 			await expect(sbt.setProxyAdmin(signers.proxyAdmin.address))
@@ -38,7 +38,7 @@ describe('SBT', () => {
 				.withArgs(signers.proxyAdmin.address)
 		})
 
-		it('The setProxyAdmin function can only be executed once.', async () => {
+		it('The setProxyAdmin function can only be executed once', async () => {
 			const sbt = await init()
 			const signers = await getSigners()
 			await sbt.setProxyAdmin(signers.proxyAdmin.address)
