@@ -286,8 +286,10 @@ describe('SBT', () => {
 			)
 				.to.emit(sbt, 'Minted')
 				.withArgs(0, signers.userA.address)
-			const modifiedMetadata = await getDummyEncodedMetadata(sbt, "ABCURL")
-			await expect(sbt.connect(signers.minterA).setTokenURI(0, modifiedMetadata))
+			const modifiedMetadata = await getDummyEncodedMetadata(sbt, 'ABCURL')
+			await expect(
+				sbt.connect(signers.minterA).setTokenURI(0, modifiedMetadata)
+			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
 				.withArgs(0, modifiedMetadata)
 		})
@@ -302,13 +304,17 @@ describe('SBT', () => {
 			)
 				.to.emit(sbt, 'Minted')
 				.withArgs(0, signers.userA.address)
-			let modifiedMetadata = await getDummyEncodedMetadata(sbt, "ABCURL")
-			await expect(sbt.connect(signers.minterA).setTokenURI(0, modifiedMetadata))
+			let modifiedMetadata = await getDummyEncodedMetadata(sbt, 'ABCURL')
+			await expect(
+				sbt.connect(signers.minterA).setTokenURI(0, modifiedMetadata)
+			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
 				.withArgs(0, modifiedMetadata)
 
-			modifiedMetadata = await getDummyEncodedMetadata(sbt, "DEFURL")
-			await expect(sbt.connect(signers.minterB).setTokenURI(0, modifiedMetadata))
+			modifiedMetadata = await getDummyEncodedMetadata(sbt, 'DEFURL')
+			await expect(
+				sbt.connect(signers.minterB).setTokenURI(0, modifiedMetadata)
+			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
 				.withArgs(0, modifiedMetadata)
 		})
@@ -317,7 +323,9 @@ describe('SBT', () => {
 			const sbt = await init()
 			const signers = await getSigners()
 
-			await sbt.connect(signers.minterUpdater).addMinter(signers.minterC.address)
+			await sbt
+				.connect(signers.minterUpdater)
+				.addMinter(signers.minterC.address)
 
 			const metadata = await getDummyEncodedMetadata(sbt)
 			await expect(
@@ -325,18 +333,24 @@ describe('SBT', () => {
 			)
 				.to.emit(sbt, 'Minted')
 				.withArgs(0, signers.userA.address)
-			let modifiedMetadata = await getDummyEncodedMetadata(sbt, "ABCURL")
-			await expect(sbt.connect(signers.minterA).setTokenURI(0, modifiedMetadata))
+			let modifiedMetadata = await getDummyEncodedMetadata(sbt, 'ABCURL')
+			await expect(
+				sbt.connect(signers.minterA).setTokenURI(0, modifiedMetadata)
+			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
 				.withArgs(0, modifiedMetadata)
 
-			modifiedMetadata = await getDummyEncodedMetadata(sbt, "DEFURL")
-			await expect(sbt.connect(signers.minterB).setTokenURI(0, modifiedMetadata))
+			modifiedMetadata = await getDummyEncodedMetadata(sbt, 'DEFURL')
+			await expect(
+				sbt.connect(signers.minterB).setTokenURI(0, modifiedMetadata)
+			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
 				.withArgs(0, modifiedMetadata)
 
-			modifiedMetadata = await getDummyEncodedMetadata(sbt, "SDFSFURL")
-			await expect(sbt.connect(signers.minterC).setTokenURI(0, modifiedMetadata))
+			modifiedMetadata = await getDummyEncodedMetadata(sbt, 'SDFSFURL')
+			await expect(
+				sbt.connect(signers.minterC).setTokenURI(0, modifiedMetadata)
+			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
 				.withArgs(0, modifiedMetadata)
 		})
