@@ -312,9 +312,7 @@ describe('SBT', () => {
 					'This is a proof of service NFT, which indicates your contribution to the project',
 				tokenURIImage:
 					'https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=d456a2af571d980d8b2985472c262b31',
-				stringAttributes: [
-					{ trait_type: 'Category', value: 'Category A' },
-				],
+				stringAttributes: [{ trait_type: 'Category', value: 'Category A' }],
 				numberAttributes: [
 					{
 						trait_type: 'No. of contributions',
@@ -347,7 +345,10 @@ describe('SBT', () => {
 			expect(decodedData.description).to.eq(metadata.description)
 			expect(decodedData.image).to.eq(metadata.tokenURIImage)
 			expect(decodedData.attributes.length).to.eq(2)
-			expect(decodedData.attributes[0]).to.deep.equal({ trait_type: 'Category', value: 'Category A' })
+			expect(decodedData.attributes[0]).to.deep.equal({
+				trait_type: 'Category',
+				value: 'Category A',
+			})
 			expect(decodedData.attributes[1]).to.deep.equal({
 				trait_type: 'No. of contributions',
 				value: '1',
@@ -359,7 +360,7 @@ describe('SBT', () => {
 					trait_type: 'No. of contributions',
 					value: '1',
 					display_type: 'number',
-				}
+				},
 			])
 		})
 
@@ -448,16 +449,16 @@ describe('SBT', () => {
 				{ trait_type: 'Location', value: 'Shibuya' },
 				{ trait_type: 'Entity', value: 'Corporation' },
 				{
-						trait_type: 'No. of contributions',
-						value: "1",
-						display_type: 'number',
-					},
-					{
-						trait_type: 'No. of locations',
-						value: "1000",
-						display_type: 'number',
-					},
-					{ trait_type: 'Gas fee used', value: "12342", display_type: 'number' }
+					trait_type: 'No. of contributions',
+					value: '1',
+					display_type: 'number',
+				},
+				{
+					trait_type: 'No. of locations',
+					value: '1000',
+					display_type: 'number',
+				},
+				{ trait_type: 'Gas fee used', value: '12342', display_type: 'number' },
 			])
 		})
 	})
