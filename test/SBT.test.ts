@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+
 import { expect, use } from 'chai'
 import { solidity } from 'ethereum-waffle'
 import { type Contract, constants } from 'ethers'
@@ -93,6 +95,58 @@ describe('SBT', () => {
 			await expect(
 				sbt.connect(signers.proxyAdmin).removeMinter(signers.minterA.address)
 			).to.revertedWith('Not minter updater')
+		})
+	})
+
+	describe('mint', () => {
+		it('The mint function should function correctly', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = sbt.encodeMetadata(
+				"Proof of service",
+				"This is a proof of service NFT",
+				[{"trait_type": "A", value: "A"}],
+				[{"trait_type": "1", display_type: "number", value: "1"}],
+				"XYZURL"
+			)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+		})
+
+		it('The mint function can be executed by minter', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = sbt.encodeMetadata(
+				"Proof of service",
+				"This is a proof of service NFT",
+				[{"trait_type": "A", value: "A"}],
+				[{"trait_type": "1", display_type: "number", value: "1"}],
+				"XYZURL"
+			)
+			await expect(
+				sbt.connect(signers.userA).mint(signers.userA.address, metadata)
+			)
+				.to.be.revertedWith('Illegal access')
+
+			await expect(
+				sbt.connect(signers.deployer).mint(signers.userA.address, metadata)
+			)
+				.to.be.revertedWith('Illegal access')
+
+			await expect(
+				sbt.connect(signers.proxyAdmin).mint(signers.userA.address, metadata)
+			)
+				.to.be.revertedWith('Illegal access')
+
+			await expect(
+				sbt.connect(signers.minterUpdater).mint(signers.userA.address, metadata)
+			)
+				.to.be.revertedWith('Illegal access')
 		})
 	})
 })
