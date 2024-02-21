@@ -5,6 +5,17 @@ import { ethers } from 'hardhat'
 import type { Contract } from 'ethers'
 import type { SignerWithAddress } from '@nomiclabs/hardhat-ethers/signers'
 
+type StringAttributes = Array<{
+	trait_type: string
+	value: string
+}>
+
+type NumberAttributes = Array<{
+	trait_type: string
+	display_type: string
+	value: number
+}>
+
 export const deploy = async (name: string): Promise<Contract> => {
 	const factoryStrage = await ethers.getContractFactory(name)
 	const contract = await factoryStrage.deploy()
@@ -22,6 +33,24 @@ export const getDummyEncodedMetadata = async (
 		[{ trait_type: 'A', value: 'A' }],
 		[{ trait_type: '1', display_type: 'number', value: '1' }],
 		tokenURIImage
+	)) as string
+
+export const getEncodedMetadata = async (
+	contract: Contract,
+	args: {
+		name: string
+		description: string
+		stringAttributes: StringAttributes
+		numberAttributes: NumberAttributes
+		tokenURIImage: string
+	}
+): Promise<string> =>
+	(await contract.encodeMetadata(
+		args.name,
+		args.description,
+		args.stringAttributes,
+		args.numberAttributes,
+		args.tokenURIImage
 	)) as string
 
 export const deployWithArg = async (
