@@ -107,6 +107,16 @@ describe('SBT', () => {
 			)
 				.to.emit(sbt, 'Minted')
 				.withArgs(0, signers.userA.address)
+
+			const tokensOfUserA = await sbt.tokensOfOwner(signers.userA.address)
+			expect(tokensOfUserA.length).to.eq(1)
+			expect(tokensOfUserA[0]).to.eq(0)
+			expect(await sbt.totalSupply()).to.eq(1)
+			expect(await sbt.currentIndex()).to.eq(1)
+			expect(await sbt.ownerOf(0)).to.eq(signers.userA.address)
+			expect(await sbt.balanceOf(signers.userA.address)).to.eq(1)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(0)
+			expect(await sbt.tokenByIndex(0)).to.eq(0)
 		})
 
 		it('The mint function can be executed by minter', async () => {
