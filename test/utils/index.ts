@@ -12,13 +12,16 @@ export const deploy = async (name: string): Promise<Contract> => {
 	return contract
 }
 
-export const getDummyEncodedMetadata = async (contract: Contract): Promise<string> => await contract.encodeMetadata(
-	'Proof of service',
-	'This is a proof of service NFT',
-	[{ "trait_type": 'A', "value": 'A' }],
-	[{ "trait_type": '1', "display_type": 'number', "value": '1' }],
-	'XYZURL'
-) as string
+export const getDummyEncodedMetadata = async (
+	contract: Contract
+): Promise<string> =>
+	(await contract.encodeMetadata(
+		'Proof of service',
+		'This is a proof of service NFT',
+		[{ trait_type: 'A', value: 'A' }],
+		[{ trait_type: '1', display_type: 'number', value: '1' }],
+		'XYZURL'
+	)) as string
 
 export const deployWithArg = async (
 	name: string,
