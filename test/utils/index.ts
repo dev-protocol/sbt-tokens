@@ -13,14 +13,15 @@ export const deploy = async (name: string): Promise<Contract> => {
 }
 
 export const getDummyEncodedMetadata = async (
-	contract: Contract
+	contract: Contract,
+	tokenURIImage = 'XYZURL'
 ): Promise<string> =>
 	(await contract.encodeMetadata(
 		'Proof of service',
 		'This is a proof of service NFT',
 		[{ trait_type: 'A', value: 'A' }],
 		[{ trait_type: '1', display_type: 'number', value: '1' }],
-		'XYZURL'
+		tokenURIImage
 	)) as string
 
 export const deployWithArg = async (
