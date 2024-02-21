@@ -1,3 +1,4 @@
+import { ethers } from 'hardhat'
 import { expect, use } from 'chai'
 import { solidity } from 'ethereum-waffle'
 import { type Contract, constants } from 'ethers'
@@ -310,6 +311,160 @@ describe('SBT', () => {
 				sbt
 					.connect(signers.userB)
 					.transferFrom(signers.userA.address, signers.minterA.address, 0)
+			).to.revertedWith('SBT can not transfer')
+		})
+
+		it('The transfer function should not work if approved operator', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			await sbt
+				.connect(signers.userA)
+				.setApprovalForAll(signers.userB.address, true)
+			await expect(
+				sbt
+					.connect(signers.userB)
+					.transferFrom(signers.userA.address, signers.minterA.address, 0)
+			).to.revertedWith('SBT can not transfer')
+		})
+	})
+
+	describe('burn', () => {
+		it('The transfer to address(0) should not work if owner', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			await expect(
+				sbt
+					.connect(signers.userA)
+					.transferFrom(signers.userA.address, constants.AddressZero, 0)
+			).to.revertedWith('ERC721: transfer to the zero address')
+		})
+
+		it('The transfer to address(0) should not work if approved user', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			await sbt.connect(signers.userA).approve(signers.userB.address, 0)
+			await expect(
+				sbt
+					.connect(signers.userB)
+					.transferFrom(signers.userA.address, constants.AddressZero, 0)
+			).to.revertedWith('ERC721: transfer to the zero address')
+		})
+
+		it('The transfer to address(0) should not work if approved operator', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			await sbt
+				.connect(signers.userA)
+				.setApprovalForAll(signers.userB.address, true)
+			await expect(
+				sbt
+					.connect(signers.userB)
+					.transferFrom(signers.userA.address, constants.AddressZero, 0)
+			).to.revertedWith('ERC721: transfer to the zero address')
+		})
+	})
+
+	describe('safeTransfer', () => {
+		it('The safeTransfer function should not work if owner', async () => {
+			const sbtContractFactory = await ethers.getContractFactory('SBT')
+			const sbt = sbtContractFactory.attach((await init()).address)
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			await expect(
+				sbt
+					.connect(signers.userA)
+					['safeTransferFrom(address,address,uint256)'](
+						signers.userA.address,
+						signers.userB.address,
+						0
+					)
+			).to.revertedWith('SBT can not transfer')
+		})
+
+		it('The safeTransfer function should not work if approved user', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			await sbt.connect(signers.userA).approve(signers.userB.address, 0)
+			await expect(
+				sbt
+					.connect(signers.userB)
+					['safeTransferFrom(address,address,uint256)'](
+						signers.userA.address,
+						signers.minterA.address,
+						0
+					)
+			).to.revertedWith('SBT can not transfer')
+		})
+
+		it('The safeTransfer function should not work if approved operator', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			await sbt
+				.connect(signers.userA)
+				.setApprovalForAll(signers.userB.address, true)
+			await expect(
+				sbt
+					.connect(signers.userB)
+					['safeTransferFrom(address,address,uint256)'](
+						signers.userA.address,
+						signers.minterA.address,
+						0
+					)
 			).to.revertedWith('SBT can not transfer')
 		})
 	})
