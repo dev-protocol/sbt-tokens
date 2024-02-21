@@ -461,5 +461,360 @@ describe('SBT', () => {
 				{ trait_type: 'Gas fee used', value: '12342', display_type: 'number' },
 			])
 		})
+
+		it('The setTokenURI function should match offchain and onchain encodedFormat for no attributes', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = {
+				name: 'Proof of service NFT',
+				description:
+					'This is a proof of service NFT, which indicates your contribution to the project',
+				tokenURIImage:
+					'https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=d456a2af571d980d8b2985472c262b31',
+				stringAttributes: [],
+				numberAttributes: [],
+			}
+			const encodedMetadata = await getEncodedMetadata(sbt, metadata)
+			await expect(
+				sbt
+					.connect(signers.minterA)
+					.mint(signers.userA.address, encodedMetadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			const offChainEncodedParams = Buffer.from(
+				JSON.stringify({
+					name: metadata.name,
+					description: metadata.description,
+					image: metadata.tokenURIImage,
+					attributes: [],
+				})
+			).toString('base64')
+			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
+				offChainEncodedParams
+			)
+			const uri = await sbt.tokenURI(0)
+			expect(uri).to.deep.eq(offChainEncodedMetadata)
+		})
+
+		it('The setTokenURI function should match offchain and onchain encodedFormat for 1 string attribute and 0 number attribute', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = {
+				name: 'Proof of service NFT',
+				description:
+					'This is a proof of service NFT, which indicates your contribution to the project',
+				tokenURIImage:
+					'https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=d456a2af571d980d8b2985472c262b31',
+				stringAttributes: [{ trait_type: 'Category', value: 'Category A' }],
+				numberAttributes: [],
+			}
+			const encodedMetadata = await getEncodedMetadata(sbt, metadata)
+			await expect(
+				sbt
+					.connect(signers.minterA)
+					.mint(signers.userA.address, encodedMetadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			const offChainEncodedParams = Buffer.from(
+				JSON.stringify({
+					name: metadata.name,
+					description: metadata.description,
+					image: metadata.tokenURIImage,
+					attributes: [{ trait_type: 'Category', value: 'Category A' }],
+				})
+			).toString('base64')
+			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
+				offChainEncodedParams
+			)
+			const uri = await sbt.tokenURI(0)
+			expect(uri).to.deep.eq(offChainEncodedMetadata)
+		})
+
+		it('The setTokenURI function should match offchain and onchain encodedFormat for 1+ string attribute and 0 number attribute', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = {
+				name: 'Proof of service NFT',
+				description:
+					'This is a proof of service NFT, which indicates your contribution to the project',
+				tokenURIImage:
+					'https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=d456a2af571d980d8b2985472c262b31',
+				stringAttributes: [
+					{ trait_type: 'Category', value: 'Category A' },
+					{ trait_type: 'Location', value: 'Shibuya' },
+					{ trait_type: 'Entity', value: 'Corporation' },
+				],
+				numberAttributes: [],
+			}
+			const encodedMetadata = await getEncodedMetadata(sbt, metadata)
+			await expect(
+				sbt
+					.connect(signers.minterA)
+					.mint(signers.userA.address, encodedMetadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			const offChainEncodedParams = Buffer.from(
+				JSON.stringify({
+					name: metadata.name,
+					description: metadata.description,
+					image: metadata.tokenURIImage,
+					attributes: [
+						{ trait_type: 'Category', value: 'Category A' },
+						{ trait_type: 'Location', value: 'Shibuya' },
+						{ trait_type: 'Entity', value: 'Corporation' },
+					],
+				})
+			).toString('base64')
+			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
+				offChainEncodedParams
+			)
+			const uri = await sbt.tokenURI(0)
+			expect(uri).to.deep.eq(offChainEncodedMetadata)
+		})
+
+		it('The setTokenURI function should match offchain and onchain encodedFormat for 0 string attribute and 1 number attribute', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = {
+				name: 'Proof of service NFT',
+				description:
+					'This is a proof of service NFT, which indicates your contribution to the project',
+				tokenURIImage:
+					'https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=d456a2af571d980d8b2985472c262b31',
+				stringAttributes: [],
+				numberAttributes: [
+					{
+						trait_type: 'No. of contributions',
+						value: 1,
+						display_type: 'number',
+					},
+				],
+			}
+			const encodedMetadata = await getEncodedMetadata(sbt, metadata)
+			await expect(
+				sbt
+					.connect(signers.minterA)
+					.mint(signers.userA.address, encodedMetadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			const offChainEncodedParams = Buffer.from(
+				JSON.stringify({
+					name: metadata.name,
+					description: metadata.description,
+					image: metadata.tokenURIImage,
+					attributes: [
+						{
+							trait_type: 'No. of contributions',
+							display_type: 'number',
+							value: '1',
+						},
+					],
+				})
+			).toString('base64')
+			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
+				offChainEncodedParams
+			)
+			const uri = await sbt.tokenURI(0)
+			expect(uri).to.deep.eq(offChainEncodedMetadata)
+		})
+
+		it('The setTokenURI function should match offchain and onchain encodedFormat for 0 string attribute and 1+ number attribute', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = {
+				name: 'Proof of service NFT',
+				description:
+					'This is a proof of service NFT, which indicates your contribution to the project',
+				tokenURIImage:
+					'https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=d456a2af571d980d8b2985472c262b31',
+				stringAttributes: [],
+				numberAttributes: [
+					{
+						trait_type: 'No. of contributions',
+						value: 1,
+						display_type: 'number',
+					},
+					{
+						trait_type: 'No. of locations',
+						value: 1000,
+						display_type: 'number',
+					},
+					{ trait_type: 'Gas fee used', value: 12342, display_type: 'number' },
+				],
+			}
+			const encodedMetadata = await getEncodedMetadata(sbt, metadata)
+			await expect(
+				sbt
+					.connect(signers.minterA)
+					.mint(signers.userA.address, encodedMetadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			const offChainEncodedParams = Buffer.from(
+				JSON.stringify({
+					name: metadata.name,
+					description: metadata.description,
+					image: metadata.tokenURIImage,
+					attributes: [
+						{
+							trait_type: 'No. of contributions',
+							display_type: 'number',
+							value: '1',
+						},
+						{
+							trait_type: 'No. of locations',
+							display_type: 'number',
+							value: '1000',
+						},
+						{
+							trait_type: 'Gas fee used',
+							display_type: 'number',
+							value: '12342',
+						},
+					],
+				})
+			).toString('base64')
+			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
+				offChainEncodedParams
+			)
+			const uri = await sbt.tokenURI(0)
+			expect(uri).to.deep.eq(offChainEncodedMetadata)
+		})
+
+		it('The setTokenURI function should match offchain and onchain encodedFormat for 1 string attribute and 1 number attribute', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = {
+				name: 'Proof of service NFT',
+				description:
+					'This is a proof of service NFT, which indicates your contribution to the project',
+				tokenURIImage:
+					'https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=d456a2af571d980d8b2985472c262b31',
+				stringAttributes: [{ trait_type: 'Category', value: 'Category A' }],
+				numberAttributes: [
+					{
+						trait_type: 'No. of contributions',
+						value: 1,
+						display_type: 'number',
+					},
+				],
+			}
+			const encodedMetadata = await getEncodedMetadata(sbt, metadata)
+			await expect(
+				sbt
+					.connect(signers.minterA)
+					.mint(signers.userA.address, encodedMetadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			const offChainEncodedParams = Buffer.from(
+				JSON.stringify({
+					name: metadata.name,
+					description: metadata.description,
+					image: metadata.tokenURIImage,
+					attributes: [
+						{ trait_type: 'Category', value: 'Category A' },
+						{
+							trait_type: 'No. of contributions',
+							display_type: 'number',
+							value: '1',
+						},
+					],
+				})
+			).toString('base64')
+			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
+				offChainEncodedParams
+			)
+			const uri = await sbt.tokenURI(0)
+			expect(uri).to.deep.eq(offChainEncodedMetadata)
+		})
+
+		it('The setTokenURI function should match offchain and onchain encodedFormat for 1+ string attribute and 1+ number attribute', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = {
+				name: 'Proof of service NFT',
+				description:
+					'This is a proof of service NFT, which indicates your contribution to the project',
+				tokenURIImage:
+					'https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=d456a2af571d980d8b2985472c262b31',
+				stringAttributes: [
+					{ trait_type: 'Category', value: 'Category A' },
+					{ trait_type: 'Location', value: 'Shibuya' },
+					{ trait_type: 'Entity', value: 'Corporation' },
+				],
+				numberAttributes: [
+					{
+						trait_type: 'No. of contributions',
+						value: 1,
+						display_type: 'number',
+					},
+					{
+						trait_type: 'No. of locations',
+						value: 1000,
+						display_type: 'number',
+					},
+					{ trait_type: 'Gas fee used', value: 12342, display_type: 'number' },
+				],
+			}
+			const encodedMetadata = await getEncodedMetadata(sbt, metadata)
+			await expect(
+				sbt
+					.connect(signers.minterA)
+					.mint(signers.userA.address, encodedMetadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			const offChainEncodedParams = Buffer.from(
+				JSON.stringify({
+					name: metadata.name,
+					description: metadata.description,
+					image: metadata.tokenURIImage,
+					attributes: [
+						{ trait_type: 'Category', value: 'Category A' },
+						{ trait_type: 'Location', value: 'Shibuya' },
+						{ trait_type: 'Entity', value: 'Corporation' },
+						{
+							trait_type: 'No. of contributions',
+							display_type: 'number',
+							value: '1',
+						},
+						{
+							trait_type: 'No. of locations',
+							display_type: 'number',
+							value: '1000',
+						},
+						{
+							trait_type: 'Gas fee used',
+							display_type: 'number',
+							value: '12342',
+						},
+					],
+				})
+			).toString('base64')
+			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
+				offChainEncodedParams
+			)
+			const uri = await sbt.tokenURI(0)
+			expect(uri).to.deep.eq(offChainEncodedMetadata)
+		})
 	})
 })

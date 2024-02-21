@@ -124,12 +124,12 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 			string memory attributeInString = string(
 				abi.encodePacked(
 					// solhint-disable-next-line quotes
-					'{"trait_type": "',
+					'{"trait_type":"',
 					stringAttributes[i].trait_type,
 					// solhint-disable-next-line quotes
 					'",',
 					// solhint-disable-next-line quotes
-					' "value": "',
+					'"value":"',
 					stringAttributes[i].value,
 					// solhint-disable-next-line quotes
 					'"}'
@@ -141,7 +141,7 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 				sbtAttributes = attributeInString;
 			} else {
 				sbtAttributes = string(
-					abi.encodePacked(sbtAttributes, ", ", attributeInString)
+					abi.encodePacked(sbtAttributes, ",", attributeInString)
 				);
 			}
 		}
@@ -150,17 +150,17 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 			string memory attributeInString = string(
 				abi.encodePacked(
 					// solhint-disable-next-line quotes
-					'{"trait_type": "',
+					'{"trait_type":"',
 					numberAttributes[i].trait_type,
 					// solhint-disable-next-line quotes
 					'",',
 					// solhint-disable-next-line quotes
-					' "display_type": "',
+					'"display_type":"',
 					numberAttributes[i].display_type,
 					// solhint-disable-next-line quotes
 					'",',
 					// solhint-disable-next-line quotes
-					' "value": "',
+					'"value":"',
 					numberAttributes[i].value.toString(),
 					// solhint-disable-next-line quotes
 					'"}'
@@ -171,7 +171,7 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 				sbtAttributes = attributeInString;
 			} else {
 				sbtAttributes = string(
-					abi.encodePacked(sbtAttributes, ", ", attributeInString)
+					abi.encodePacked(sbtAttributes, ",", attributeInString)
 				);
 			}
 		}
@@ -188,13 +188,13 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 							'{"name":"',
 							name,
 							// solhint-disable-next-line quotes
-							'", "description":"',
+							'","description":"',
 							description,
 							// solhint-disable-next-line quotes
-							'", "image": "',
+							'","image":"',
 							tokenUriImage,
 							// solhint-disable-next-line quotes
-							'", "attributes":',
+							'","attributes":',
 							sbtAttributes,
 							"}"
 						)
