@@ -276,6 +276,38 @@ describe('SBT', () => {
 	})
 
 	describe('setTokenURI', () => {
+		it('The setTokenURI function can be executed by minter', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			let metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			metadata = await getDummyEncodedMetadata(sbt, 'USERA')
+			await expect(
+				sbt.connect(signers.userA).setTokenURI(0, metadata)
+			).to.be.revertedWith('Illegal access')
+
+			metadata = await getDummyEncodedMetadata(sbt, 'USERB')
+			await expect(
+				sbt.connect(signers.deployer).setTokenURI(0, metadata)
+			).to.be.revertedWith('Illegal access')
+
+			metadata = await getDummyEncodedMetadata(sbt, 'USERC')
+			await expect(
+				sbt.connect(signers.proxyAdmin).setTokenURI(0, metadata)
+			).to.be.revertedWith('Illegal access')
+
+			metadata = await getDummyEncodedMetadata(sbt, 'USERD')
+			await expect(
+				sbt.connect(signers.minterUpdater).setTokenURI(0, metadata)
+			).to.be.revertedWith('Illegal access')
+		})
+
 		it('The setTokenURI function should function correctly', async () => {
 			const sbt = await init()
 			const signers = await getSigners()
@@ -353,6 +385,39 @@ describe('SBT', () => {
 			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
 				.withArgs(0, modifiedMetadata)
+		})
+
+
+		it('The setTokenURI function should function correctly for multiple users', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userB.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(1, signers.userB.address)
+
+			let modifiedMetadata = await getDummyEncodedMetadata(sbt, 'UserAURL')
+			await expect(
+				sbt.connect(signers.minterA).setTokenURI(0, modifiedMetadata)
+			)
+				.to.be.emit(sbt, 'SetSBTTokenURI')
+				.withArgs(0, modifiedMetadata)
+
+			modifiedMetadata = await getDummyEncodedMetadata(sbt, 'UserBURL')
+			await expect(
+				sbt.connect(signers.minterB).setTokenURI(1, modifiedMetadata)
+			)
+				.to.be.emit(sbt, 'SetSBTTokenURI')
+				.withArgs(1, modifiedMetadata)
 		})
 	})
 })
