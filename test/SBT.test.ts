@@ -146,5 +146,38 @@ describe('SBT', () => {
 			expect(await sbt.currentIndex()).to.eq(0)
 			expect(await sbt.balanceOf(signers.userA.address)).to.eq(0)
 		})
+
+		it('The mint function can be executed by all minters', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			// Execute by Minter A.
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+			// Execute by Minter B.
+			await expect(
+				sbt.connect(signers.minterB).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(1, signers.userA.address)
+
+			const tokensOfUserA = await sbt.tokensOfOwner(signers.userA.address)
+			expect(tokensOfUserA.length).to.eq(2)
+			expect(tokensOfUserA[0]).to.eq(0)
+			expect(tokensOfUserA[1]).to.eq(1)
+			expect(await sbt.totalSupply()).to.eq(2)
+			expect(await sbt.currentIndex()).to.eq(2)
+			expect(await sbt.ownerOf(0)).to.eq(signers.userA.address)
+			expect(await sbt.ownerOf(1)).to.eq(signers.userA.address)
+			expect(await sbt.balanceOf(signers.userA.address)).to.eq(2)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(0)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 1)).to.eq(1)
+			expect(await sbt.tokenByIndex(0)).to.eq(0)
+			expect(await sbt.tokenByIndex(1)).to.eq(1)
+		})
 	})
 })
