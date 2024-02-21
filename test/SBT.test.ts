@@ -275,6 +275,45 @@ describe('SBT', () => {
 		})
 	})
 
+	describe('transfer', () => {
+		it('The transfer function should not work if owner', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			await expect(
+				sbt
+					.connect(signers.userA)
+					.transferFrom(signers.userA.address, signers.userB.address, 0)
+			).to.revertedWith('SBT can not transfer')
+		})
+
+		it('The transfer function should not work if approved user', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			await sbt.connect(signers.userA).approve(signers.userB.address, 0)
+			await expect(
+				sbt
+					.connect(signers.userB)
+					.transferFrom(signers.userA.address, signers.minterA.address, 0)
+			).to.revertedWith('SBT can not transfer')
+		})
+	})
+
 	describe('setTokenURI', () => {
 		it('The setTokenURI function can be executed by minter', async () => {
 			const sbt = await init()
@@ -386,7 +425,6 @@ describe('SBT', () => {
 				.to.be.emit(sbt, 'SetSBTTokenURI')
 				.withArgs(0, modifiedMetadata)
 		})
-
 
 		it('The setTokenURI function should function correctly for multiple users', async () => {
 			const sbt = await init()
