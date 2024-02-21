@@ -184,7 +184,9 @@ describe('SBT', () => {
 			const sbt = await init()
 			const signers = await getSigners()
 
-			await sbt.addMinter(signers.minterC.address)
+			await sbt
+				.connect(signers.minterUpdater)
+				.addMinter(signers.minterC.address)
 			const metadata = await getDummyEncodedMetadata(sbt)
 			// Execute by Minter A.
 			await expect(
@@ -222,6 +224,54 @@ describe('SBT', () => {
 			expect(await sbt.tokenByIndex(0)).to.eq(0)
 			expect(await sbt.tokenByIndex(1)).to.eq(1)
 			expect(await sbt.tokenByIndex(2)).to.eq(2)
+		})
+
+		it('The mint function should function correctly for multiple users', async () => {
+			const sbt = await init()
+			const signers = await getSigners()
+
+			const metadata = await getDummyEncodedMetadata(sbt)
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(0, signers.userA.address)
+
+			let tokensOfUserA = await sbt.tokensOfOwner(signers.userA.address)
+			expect(tokensOfUserA.length).to.eq(1)
+			expect(tokensOfUserA[0]).to.eq(0)
+			expect(await sbt.totalSupply()).to.eq(1)
+			expect(await sbt.currentIndex()).to.eq(1)
+			expect(await sbt.ownerOf(0)).to.eq(signers.userA.address)
+			expect(await sbt.balanceOf(signers.userA.address)).to.eq(1)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(0)
+			expect(await sbt.tokenByIndex(0)).to.eq(0)
+
+			await expect(
+				sbt.connect(signers.minterA).mint(signers.userB.address, metadata)
+			)
+				.to.emit(sbt, 'Minted')
+				.withArgs(1, signers.userB.address)
+
+			// System checks
+			expect(await sbt.totalSupply()).to.eq(2)
+			expect(await sbt.currentIndex()).to.eq(2)
+			// UserA checks
+			tokensOfUserA = await sbt.tokensOfOwner(signers.userA.address)
+			expect(tokensOfUserA.length).to.eq(1)
+			expect(tokensOfUserA[0]).to.eq(0)
+			expect(await sbt.ownerOf(0)).to.eq(signers.userA.address)
+			expect(await sbt.balanceOf(signers.userA.address)).to.eq(1)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(0)
+			expect(await sbt.tokenByIndex(0)).to.eq(0)
+			// UserB checks
+			const tokensOfUserB = await sbt.tokensOfOwner(signers.userB.address)
+			expect(tokensOfUserB.length).to.eq(1)
+			expect(tokensOfUserB[0]).to.eq(1)
+			expect(await sbt.ownerOf(1)).to.eq(signers.userB.address)
+			expect(await sbt.balanceOf(signers.userB.address)).to.eq(1)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userB.address, 0)).to.eq(1)
+			expect(await sbt.tokenByIndex(1)).to.eq(1)
 		})
 	})
 })
