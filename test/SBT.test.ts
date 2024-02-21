@@ -1,10 +1,10 @@
-/* eslint-disable @typescript-eslint/naming-convention */
+
 
 import { expect, use } from 'chai'
 import { solidity } from 'ethereum-waffle'
 import { type Contract, constants } from 'ethers'
 
-import { deploy, getSigners } from './utils'
+import { deploy, getDummyEncodedMetadata, getSigners } from './utils'
 
 use(solidity)
 
@@ -103,13 +103,7 @@ describe('SBT', () => {
 			const sbt = await init()
 			const signers = await getSigners()
 
-			const metadata = sbt.encodeMetadata(
-				"Proof of service",
-				"This is a proof of service NFT",
-				[{"trait_type": "A", value: "A"}],
-				[{"trait_type": "1", display_type: "number", value: "1"}],
-				"XYZURL"
-			)
+			const metadata = await getDummyEncodedMetadata(sbt)
 			await expect(
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
@@ -121,32 +115,22 @@ describe('SBT', () => {
 			const sbt = await init()
 			const signers = await getSigners()
 
-			const metadata = sbt.encodeMetadata(
-				"Proof of service",
-				"This is a proof of service NFT",
-				[{"trait_type": "A", value: "A"}],
-				[{"trait_type": "1", display_type: "number", value: "1"}],
-				"XYZURL"
-			)
+			const metadata = await getDummyEncodedMetadata(sbt)
 			await expect(
 				sbt.connect(signers.userA).mint(signers.userA.address, metadata)
-			)
-				.to.be.revertedWith('Illegal access')
+			).to.be.revertedWith('Illegal access')
 
 			await expect(
 				sbt.connect(signers.deployer).mint(signers.userA.address, metadata)
-			)
-				.to.be.revertedWith('Illegal access')
+			).to.be.revertedWith('Illegal access')
 
 			await expect(
 				sbt.connect(signers.proxyAdmin).mint(signers.userA.address, metadata)
-			)
-				.to.be.revertedWith('Illegal access')
+			).to.be.revertedWith('Illegal access')
 
 			await expect(
 				sbt.connect(signers.minterUpdater).mint(signers.userA.address, metadata)
-			)
-				.to.be.revertedWith('Illegal access')
+			).to.be.revertedWith('Illegal access')
 		})
 	})
 })
