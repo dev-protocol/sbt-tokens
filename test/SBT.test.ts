@@ -139,6 +139,12 @@ describe('SBT', () => {
 			await expect(
 				sbt.connect(signers.minterUpdater).mint(signers.userA.address, metadata)
 			).to.be.revertedWith('Illegal access')
+
+			const tokensOfUserA = await sbt.tokensOfOwner(signers.userA.address)
+			expect(tokensOfUserA.length).to.eq(0)
+			expect(await sbt.totalSupply()).to.eq(0)
+			expect(await sbt.currentIndex()).to.eq(0)
+			expect(await sbt.balanceOf(signers.userA.address)).to.eq(0)
 		})
 	})
 })
