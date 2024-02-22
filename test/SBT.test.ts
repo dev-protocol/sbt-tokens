@@ -30,25 +30,6 @@ describe('SBT', () => {
 		})
 	})
 
-	describe('setProxyAdmin', () => {
-		it('The setProxyAdmin function should execute once', async () => {
-			const sbt = await init()
-			const signers = await getSigners()
-			await expect(sbt.setProxyAdmin(signers.proxyAdmin.address))
-				.to.emit(sbt, 'SetProxyAdmin')
-				.withArgs(signers.proxyAdmin.address)
-		})
-
-		it('The setProxyAdmin function can only be executed once', async () => {
-			const sbt = await init()
-			const signers = await getSigners()
-			await sbt.setProxyAdmin(signers.proxyAdmin.address)
-			await expect(
-				sbt.setProxyAdmin(signers.proxyAdmin.address)
-			).to.be.revertedWith('Already set')
-		})
-	})
-
 	describe('addMinter', () => {
 		it('The addMinter function can be executed by minterUpdater', async () => {
 			const sbt = await init()
@@ -68,7 +49,11 @@ describe('SBT', () => {
 			)
 
 			await expect(
-				sbt.connect(signers.proxyAdmin).addMinter(signers.minterC.address)
+				sbt.connect(signers.deployer).addMinter(signers.minterC.address)
+			).to.revertedWith('Not minter updater')
+
+			await expect(
+				sbt.connect(signers.userA).addMinter(signers.minterC.address)
 			).to.revertedWith('Not minter updater')
 		})
 	})
@@ -92,7 +77,11 @@ describe('SBT', () => {
 			)
 
 			await expect(
-				sbt.connect(signers.proxyAdmin).removeMinter(signers.minterA.address)
+				sbt.connect(signers.deployer).removeMinter(signers.minterA.address)
+			).to.revertedWith('Not minter updater')
+
+			await expect(
+				sbt.connect(signers.userA).removeMinter(signers.minterA.address)
 			).to.revertedWith('Not minter updater')
 		})
 	})
@@ -134,7 +123,7 @@ describe('SBT', () => {
 			).to.be.revertedWith('Illegal access')
 
 			await expect(
-				sbt.connect(signers.proxyAdmin).mint(signers.userA.address, metadata)
+				sbt.connect(signers.userB).mint(signers.userA.address, metadata)
 			).to.be.revertedWith('Illegal access')
 
 			await expect(
@@ -493,7 +482,7 @@ describe('SBT', () => {
 
 			metadata = await getDummyEncodedMetadata(sbt, 'USERC')
 			await expect(
-				sbt.connect(signers.proxyAdmin).setTokenURI(0, metadata)
+				sbt.connect(signers.userB).setTokenURI(0, metadata)
 			).to.be.revertedWith('Illegal access')
 
 			metadata = await getDummyEncodedMetadata(sbt, 'USERD')
