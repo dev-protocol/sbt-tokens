@@ -3,7 +3,6 @@ pragma solidity =0.8.9;
 
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {Base64} from "@devprotocol/util-contracts/contracts/utils/Base64.sol";
-import {ProxyAdmin} from "@openzeppelin/contracts/proxy/transparent/ProxyAdmin.sol";
 import {ERC721EnumerableUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 
 import {ISBT} from "./interfaces/ISBT.sol";
@@ -12,8 +11,6 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 	using Base64 for bytes;
 	using Strings for uint256;
 
-	/// @dev Account with proxy adming rights.
-	address private _proxyAdmin;
 	/// @dev EOA with rights to allow(add)/disallow(remove) minter.
 	address private _minterUpdater;
 
@@ -68,12 +65,6 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 		for (uint256 i = 0; i < minters.length; i++) {
 			_minters[minters[i]] = true;
 		}
-	}
-
-	function setProxyAdmin(address proxyAdmin) external {
-		require(_proxyAdmin == address(0), "Already set");
-		_proxyAdmin = proxyAdmin;
-		emit SetProxyAdmin(proxyAdmin);
 	}
 
 	function addMinter(address minter) external override onlyMinterUpdater {
@@ -237,10 +228,6 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 	) public view override returns (bytes memory) {
 		require(tokenId < currentIndex(), "Token not found");
 		return _sbtdata[tokenId];
-	}
-
-	function owner() external view returns (address) {
-		return ProxyAdmin(_proxyAdmin).owner();
 	}
 
 	function tokensOfOwner(
