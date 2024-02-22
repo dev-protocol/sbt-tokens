@@ -106,6 +106,8 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 	}
 
 	function _tokenURI(uint256 tokenId) private view returns (string memory) {
+		require(tokenId < currentIndex(), "Token not found");
+
 		(
 			string memory name,
 			string memory description,
@@ -113,7 +115,7 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 			StringAttribute[] memory stringAttributes,
 			NumberAttribute[] memory numberAttributes
 		) = abi.decode(
-				_sbtdata[tokenId],
+				metadataOf(tokenId),
 				(string, string, string, StringAttribute[], NumberAttribute[])
 			);
 
@@ -228,6 +230,13 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 
 	function currentIndex() public view override returns (uint256) {
 		return super.totalSupply();
+	}
+
+	function metadataOf(
+		uint256 tokenId
+	) public view override returns (bytes memory) {
+		require(tokenId < currentIndex(), "Token not found");
+		return _sbtdata[tokenId];
 	}
 
 	function owner() external view returns (address) {
