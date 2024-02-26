@@ -111,4 +111,11 @@ interface ISBT {
 	 * @return uint256 current token id
 	 */
 	function currentIndex() external view returns (uint256);
+
+	/*
+	 * @dev get mapped metadata bytes of token id
+	 * @param tokenId the token id of the NFT
+	 * @return bytes The mapped metadata bytes
+	 */
+	function metadataOf(uint256 tokenId) external view returns (bytes memory);
 }
