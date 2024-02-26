@@ -91,6 +91,9 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 		address to,
 		bytes memory metadata
 	) external override onlyMinter returns (uint256 tokenId_) {
+		unchecked {
+			_tokenIdCounter++;
+		}
 		uint256 currentId = currentIndex();
 		_mint(to, currentId);
 		emit Minted(currentId, to);
