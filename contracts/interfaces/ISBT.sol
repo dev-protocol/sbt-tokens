@@ -113,6 +113,12 @@ interface ISBT {
 	function currentIndex() external view returns (uint256);
 
 	/*
+	 * @dev get next id of token to be minted
+	 * @return uint256 next token id
+	 */
+	function nextIndex() external view returns (uint256);
+
+	/*
 	 * @dev get mapped metadata bytes of token id
 	 * @param tokenId the token id of the NFT
 	 * @return bytes The mapped metadata bytes

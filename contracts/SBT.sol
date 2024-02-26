@@ -83,7 +83,7 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 		uint256 tokenId,
 		bytes memory metadata
 	) external override onlyMinter {
-		require(tokenId < currentIndex(), "Token not found");
+		require(tokenId <= currentIndex(), "Token not found");
 		_setTokenURI(tokenId, metadata);
 	}
 
@@ -106,7 +106,7 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 	}
 
 	function _tokenURI(uint256 tokenId) private view returns (string memory) {
-		require(tokenId < currentIndex(), "Token not found");
+		require(tokenId <= currentIndex(), "Token not found");
 
 		(
 			string memory name,
@@ -229,13 +229,17 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 	}
 
 	function currentIndex() public view override returns (uint256) {
-		return super.totalSupply();
+		return totalSupply();
+	}
+
+	function nextIndex() public view override returns (uint256) {
+		return currentIndex() + 1;
 	}
 
 	function metadataOf(
 		uint256 tokenId
 	) public view override returns (bytes memory) {
-		require(tokenId < currentIndex(), "Token not found");
+		require(tokenId <= currentIndex(), "Token not found");
 		return _sbtdata[tokenId];
 	}
 
