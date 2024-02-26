@@ -13,6 +13,8 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 
 	/// @dev EOA with rights to allow(add)/disallow(remove) minter.
 	address private _minterUpdater;
+	/// @dev The counter to mint new NFTs and track supply.
+	uint256 private _tokenIdCounter;
 
 	/// @dev EOA with minting rights.
 	mapping(address => bool) private _minters;
@@ -94,6 +96,13 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 		emit Minted(currentId, to);
 		_setTokenURI(currentId, metadata);
 		return currentId;
+	}
+
+	/**
+	 * @dev See {IERC721Enumerable-totalSupply}.
+	 */
+	function totalSupply() public view override returns (uint256) {
+		return _tokenIdCounter;
 	}
 
 	function _tokenURI(uint256 tokenId) private view returns (string memory) {
