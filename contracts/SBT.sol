@@ -13,6 +13,8 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 
 	/// @dev EOA with rights to allow(add)/disallow(remove) minter.
 	address private _minterUpdater;
+	/// @dev The counter to mint new NFTs and track supply.
+	uint256 private _tokenIdCounter;
 
 	/// @dev EOA with minting rights.
 	mapping(address => bool) private _minters;
@@ -81,7 +83,7 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 		uint256 tokenId,
 		bytes memory metadata
 	) external override onlyMinter {
-		require(tokenId < currentIndex(), "Token not found");
+		require(tokenId <= currentIndex(), "Token not found");
 		_setTokenURI(tokenId, metadata);
 	}
 
@@ -89,6 +91,9 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 		address to,
 		bytes memory metadata
 	) external override onlyMinter returns (uint256 tokenId_) {
+		unchecked {
+			_tokenIdCounter++;
+		}
 		uint256 currentId = currentIndex();
 		_mint(to, currentId);
 		emit Minted(currentId, to);
@@ -96,8 +101,15 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 		return currentId;
 	}
 
+	/**
+	 * @dev See {IERC721Enumerable-totalSupply}.
+	 */
+	function totalSupply() public view override returns (uint256) {
+		return _tokenIdCounter;
+	}
+
 	function _tokenURI(uint256 tokenId) private view returns (string memory) {
-		require(tokenId < currentIndex(), "Token not found");
+		require(tokenId <= currentIndex(), "Token not found");
 
 		(
 			string memory name,
@@ -220,13 +232,17 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 	}
 
 	function currentIndex() public view override returns (uint256) {
-		return super.totalSupply();
+		return totalSupply();
+	}
+
+	function nextIndex() public view override returns (uint256) {
+		return currentIndex() + 1;
 	}
 
 	function metadataOf(
 		uint256 tokenId
 	) public view override returns (bytes memory) {
-		require(tokenId < currentIndex(), "Token not found");
+		require(tokenId <= currentIndex(), "Token not found");
 		return _sbtdata[tokenId];
 	}
 

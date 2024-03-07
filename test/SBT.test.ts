@@ -96,17 +96,17 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			const tokensOfUserA = await sbt.tokensOfOwner(signers.userA.address)
 			expect(tokensOfUserA.length).to.eq(1)
-			expect(tokensOfUserA[0]).to.eq(0)
+			expect(tokensOfUserA[0]).to.eq(1)
 			expect(await sbt.totalSupply()).to.eq(1)
 			expect(await sbt.currentIndex()).to.eq(1)
-			expect(await sbt.ownerOf(0)).to.eq(signers.userA.address)
+			expect(await sbt.ownerOf(1)).to.eq(signers.userA.address)
 			expect(await sbt.balanceOf(signers.userA.address)).to.eq(1)
-			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(0)
-			expect(await sbt.tokenByIndex(0)).to.eq(0)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(1)
+			expect(await sbt.tokenByIndex(0)).to.eq(1)
 		})
 
 		it('The mint function can be executed by minter', async () => {
@@ -147,27 +147,27 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 			// Execute by Minter B.
 			await expect(
 				sbt.connect(signers.minterB).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(1, signers.userA.address)
+				.withArgs(2, signers.userA.address)
 
 			const tokensOfUserA = await sbt.tokensOfOwner(signers.userA.address)
 			expect(tokensOfUserA.length).to.eq(2)
-			expect(tokensOfUserA[0]).to.eq(0)
-			expect(tokensOfUserA[1]).to.eq(1)
+			expect(tokensOfUserA[0]).to.eq(1)
+			expect(tokensOfUserA[1]).to.eq(2)
 			expect(await sbt.totalSupply()).to.eq(2)
 			expect(await sbt.currentIndex()).to.eq(2)
-			expect(await sbt.ownerOf(0)).to.eq(signers.userA.address)
 			expect(await sbt.ownerOf(1)).to.eq(signers.userA.address)
+			expect(await sbt.ownerOf(2)).to.eq(signers.userA.address)
 			expect(await sbt.balanceOf(signers.userA.address)).to.eq(2)
-			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(0)
-			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 1)).to.eq(1)
-			expect(await sbt.tokenByIndex(0)).to.eq(0)
-			expect(await sbt.tokenByIndex(1)).to.eq(1)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(1)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 1)).to.eq(2)
+			expect(await sbt.tokenByIndex(0)).to.eq(1)
+			expect(await sbt.tokenByIndex(1)).to.eq(2)
 		})
 
 		it('The mint function can be executed by all minters', async () => {
@@ -183,37 +183,37 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 			// Execute by Minter B.
 			await expect(
 				sbt.connect(signers.minterB).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(1, signers.userA.address)
+				.withArgs(2, signers.userA.address)
 			// Execute by Minter C.
 			await expect(
 				sbt.connect(signers.minterC).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(2, signers.userA.address)
+				.withArgs(3, signers.userA.address)
 
 			const tokensOfUserA = await sbt.tokensOfOwner(signers.userA.address)
 			expect(tokensOfUserA.length).to.eq(3)
-			expect(tokensOfUserA[0]).to.eq(0)
-			expect(tokensOfUserA[1]).to.eq(1)
-			expect(tokensOfUserA[2]).to.eq(2)
+			expect(tokensOfUserA[0]).to.eq(1)
+			expect(tokensOfUserA[1]).to.eq(2)
+			expect(tokensOfUserA[2]).to.eq(3)
 			expect(await sbt.totalSupply()).to.eq(3)
 			expect(await sbt.currentIndex()).to.eq(3)
-			expect(await sbt.ownerOf(0)).to.eq(signers.userA.address)
 			expect(await sbt.ownerOf(1)).to.eq(signers.userA.address)
 			expect(await sbt.ownerOf(2)).to.eq(signers.userA.address)
+			expect(await sbt.ownerOf(3)).to.eq(signers.userA.address)
 			expect(await sbt.balanceOf(signers.userA.address)).to.eq(3)
-			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(0)
-			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 1)).to.eq(1)
-			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 2)).to.eq(2)
-			expect(await sbt.tokenByIndex(0)).to.eq(0)
-			expect(await sbt.tokenByIndex(1)).to.eq(1)
-			expect(await sbt.tokenByIndex(2)).to.eq(2)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(1)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 1)).to.eq(2)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 2)).to.eq(3)
+			expect(await sbt.tokenByIndex(0)).to.eq(1)
+			expect(await sbt.tokenByIndex(1)).to.eq(2)
+			expect(await sbt.tokenByIndex(2)).to.eq(3)
 		})
 
 		it('The mint function should function correctly for multiple users', async () => {
@@ -225,23 +225,23 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			let tokensOfUserA = await sbt.tokensOfOwner(signers.userA.address)
 			expect(tokensOfUserA.length).to.eq(1)
-			expect(tokensOfUserA[0]).to.eq(0)
+			expect(tokensOfUserA[0]).to.eq(1)
 			expect(await sbt.totalSupply()).to.eq(1)
 			expect(await sbt.currentIndex()).to.eq(1)
-			expect(await sbt.ownerOf(0)).to.eq(signers.userA.address)
+			expect(await sbt.ownerOf(1)).to.eq(signers.userA.address)
 			expect(await sbt.balanceOf(signers.userA.address)).to.eq(1)
-			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(0)
-			expect(await sbt.tokenByIndex(0)).to.eq(0)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(1)
+			expect(await sbt.tokenByIndex(0)).to.eq(1)
 
 			await expect(
 				sbt.connect(signers.minterA).mint(signers.userB.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(1, signers.userB.address)
+				.withArgs(2, signers.userB.address)
 
 			// System checks
 			expect(await sbt.totalSupply()).to.eq(2)
@@ -249,19 +249,19 @@ describe('SBT', () => {
 			// UserA checks
 			tokensOfUserA = await sbt.tokensOfOwner(signers.userA.address)
 			expect(tokensOfUserA.length).to.eq(1)
-			expect(tokensOfUserA[0]).to.eq(0)
-			expect(await sbt.ownerOf(0)).to.eq(signers.userA.address)
+			expect(tokensOfUserA[0]).to.eq(1)
+			expect(await sbt.ownerOf(1)).to.eq(signers.userA.address)
 			expect(await sbt.balanceOf(signers.userA.address)).to.eq(1)
-			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(0)
-			expect(await sbt.tokenByIndex(0)).to.eq(0)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userA.address, 0)).to.eq(1)
+			expect(await sbt.tokenByIndex(0)).to.eq(1)
 			// UserB checks
 			const tokensOfUserB = await sbt.tokensOfOwner(signers.userB.address)
 			expect(tokensOfUserB.length).to.eq(1)
-			expect(tokensOfUserB[0]).to.eq(1)
-			expect(await sbt.ownerOf(1)).to.eq(signers.userB.address)
+			expect(tokensOfUserB[0]).to.eq(2)
+			expect(await sbt.ownerOf(2)).to.eq(signers.userB.address)
 			expect(await sbt.balanceOf(signers.userB.address)).to.eq(1)
-			expect(await sbt.tokenOfOwnerByIndex(signers.userB.address, 0)).to.eq(1)
-			expect(await sbt.tokenByIndex(1)).to.eq(1)
+			expect(await sbt.tokenOfOwnerByIndex(signers.userB.address, 0)).to.eq(2)
+			expect(await sbt.tokenByIndex(1)).to.eq(2)
 		})
 	})
 
@@ -275,12 +275,12 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			await expect(
 				sbt
 					.connect(signers.userA)
-					.transferFrom(signers.userA.address, signers.userB.address, 0)
+					.transferFrom(signers.userA.address, signers.userB.address, 1)
 			).to.revertedWith('SBT can not transfer')
 		})
 
@@ -293,13 +293,13 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
-			await sbt.connect(signers.userA).approve(signers.userB.address, 0)
+			await sbt.connect(signers.userA).approve(signers.userB.address, 1)
 			await expect(
 				sbt
 					.connect(signers.userB)
-					.transferFrom(signers.userA.address, signers.minterA.address, 0)
+					.transferFrom(signers.userA.address, signers.minterA.address, 1)
 			).to.revertedWith('SBT can not transfer')
 		})
 
@@ -312,7 +312,7 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			await sbt
 				.connect(signers.userA)
@@ -320,7 +320,7 @@ describe('SBT', () => {
 			await expect(
 				sbt
 					.connect(signers.userB)
-					.transferFrom(signers.userA.address, signers.minterA.address, 0)
+					.transferFrom(signers.userA.address, signers.minterA.address, 1)
 			).to.revertedWith('SBT can not transfer')
 		})
 	})
@@ -335,12 +335,12 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			await expect(
 				sbt
 					.connect(signers.userA)
-					.transferFrom(signers.userA.address, constants.AddressZero, 0)
+					.transferFrom(signers.userA.address, constants.AddressZero, 1)
 			).to.revertedWith('ERC721: transfer to the zero address')
 		})
 
@@ -353,13 +353,13 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
-			await sbt.connect(signers.userA).approve(signers.userB.address, 0)
+			await sbt.connect(signers.userA).approve(signers.userB.address, 1)
 			await expect(
 				sbt
 					.connect(signers.userB)
-					.transferFrom(signers.userA.address, constants.AddressZero, 0)
+					.transferFrom(signers.userA.address, constants.AddressZero, 1)
 			).to.revertedWith('ERC721: transfer to the zero address')
 		})
 
@@ -372,7 +372,7 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			await sbt
 				.connect(signers.userA)
@@ -380,7 +380,7 @@ describe('SBT', () => {
 			await expect(
 				sbt
 					.connect(signers.userB)
-					.transferFrom(signers.userA.address, constants.AddressZero, 0)
+					.transferFrom(signers.userA.address, constants.AddressZero, 1)
 			).to.revertedWith('ERC721: transfer to the zero address')
 		})
 	})
@@ -396,7 +396,7 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			await expect(
 				sbt
@@ -404,7 +404,7 @@ describe('SBT', () => {
 					['safeTransferFrom(address,address,uint256)'](
 						signers.userA.address,
 						signers.userB.address,
-						0
+						1
 					)
 			).to.revertedWith('SBT can not transfer')
 		})
@@ -418,16 +418,16 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
-			await sbt.connect(signers.userA).approve(signers.userB.address, 0)
+			await sbt.connect(signers.userA).approve(signers.userB.address, 1)
 			await expect(
 				sbt
 					.connect(signers.userB)
 					['safeTransferFrom(address,address,uint256)'](
 						signers.userA.address,
 						signers.minterA.address,
-						0
+						1
 					)
 			).to.revertedWith('SBT can not transfer')
 		})
@@ -441,7 +441,7 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			await sbt
 				.connect(signers.userA)
@@ -452,7 +452,7 @@ describe('SBT', () => {
 					['safeTransferFrom(address,address,uint256)'](
 						signers.userA.address,
 						signers.minterA.address,
-						0
+						1
 					)
 			).to.revertedWith('SBT can not transfer')
 		})
@@ -468,26 +468,26 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			metadata = await getDummyEncodedMetadata(sbt, 'USERA')
 			await expect(
-				sbt.connect(signers.userA).setTokenURI(0, metadata)
+				sbt.connect(signers.userA).setTokenURI(1, metadata)
 			).to.be.revertedWith('Illegal access')
 
 			metadata = await getDummyEncodedMetadata(sbt, 'USERB')
 			await expect(
-				sbt.connect(signers.deployer).setTokenURI(0, metadata)
+				sbt.connect(signers.deployer).setTokenURI(1, metadata)
 			).to.be.revertedWith('Illegal access')
 
 			metadata = await getDummyEncodedMetadata(sbt, 'USERC')
 			await expect(
-				sbt.connect(signers.userB).setTokenURI(0, metadata)
+				sbt.connect(signers.userB).setTokenURI(1, metadata)
 			).to.be.revertedWith('Illegal access')
 
 			metadata = await getDummyEncodedMetadata(sbt, 'USERD')
 			await expect(
-				sbt.connect(signers.minterUpdater).setTokenURI(0, metadata)
+				sbt.connect(signers.minterUpdater).setTokenURI(1, metadata)
 			).to.be.revertedWith('Illegal access')
 		})
 
@@ -500,13 +500,13 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 			const modifiedMetadata = await getDummyEncodedMetadata(sbt, 'ABCURL')
 			await expect(
-				sbt.connect(signers.minterA).setTokenURI(0, modifiedMetadata)
+				sbt.connect(signers.minterA).setTokenURI(1, modifiedMetadata)
 			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
-				.withArgs(0, modifiedMetadata)
+				.withArgs(1, modifiedMetadata)
 		})
 
 		it('The setTokenURI function should function correctly for all minters', async () => {
@@ -518,20 +518,20 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 			let modifiedMetadata = await getDummyEncodedMetadata(sbt, 'ABCURL')
 			await expect(
-				sbt.connect(signers.minterA).setTokenURI(0, modifiedMetadata)
+				sbt.connect(signers.minterA).setTokenURI(1, modifiedMetadata)
 			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
-				.withArgs(0, modifiedMetadata)
+				.withArgs(1, modifiedMetadata)
 
 			modifiedMetadata = await getDummyEncodedMetadata(sbt, 'DEFURL')
 			await expect(
-				sbt.connect(signers.minterB).setTokenURI(0, modifiedMetadata)
+				sbt.connect(signers.minterB).setTokenURI(1, modifiedMetadata)
 			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
-				.withArgs(0, modifiedMetadata)
+				.withArgs(1, modifiedMetadata)
 		})
 
 		it('The setTokenURI function should function correctly for all minters and new minter', async () => {
@@ -547,27 +547,27 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 			let modifiedMetadata = await getDummyEncodedMetadata(sbt, 'ABCURL')
 			await expect(
-				sbt.connect(signers.minterA).setTokenURI(0, modifiedMetadata)
+				sbt.connect(signers.minterA).setTokenURI(1, modifiedMetadata)
 			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
-				.withArgs(0, modifiedMetadata)
+				.withArgs(1, modifiedMetadata)
 
 			modifiedMetadata = await getDummyEncodedMetadata(sbt, 'DEFURL')
 			await expect(
-				sbt.connect(signers.minterB).setTokenURI(0, modifiedMetadata)
+				sbt.connect(signers.minterB).setTokenURI(1, modifiedMetadata)
 			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
-				.withArgs(0, modifiedMetadata)
+				.withArgs(1, modifiedMetadata)
 
 			modifiedMetadata = await getDummyEncodedMetadata(sbt, 'SDFSFURL')
 			await expect(
-				sbt.connect(signers.minterC).setTokenURI(0, modifiedMetadata)
+				sbt.connect(signers.minterC).setTokenURI(1, modifiedMetadata)
 			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
-				.withArgs(0, modifiedMetadata)
+				.withArgs(1, modifiedMetadata)
 		})
 
 		it('The setTokenURI function should function correctly for multiple users', async () => {
@@ -579,27 +579,27 @@ describe('SBT', () => {
 				sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			await expect(
 				sbt.connect(signers.minterA).mint(signers.userB.address, metadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(1, signers.userB.address)
+				.withArgs(2, signers.userB.address)
 
 			let modifiedMetadata = await getDummyEncodedMetadata(sbt, 'UserAURL')
 			await expect(
-				sbt.connect(signers.minterA).setTokenURI(0, modifiedMetadata)
-			)
-				.to.be.emit(sbt, 'SetSBTTokenURI')
-				.withArgs(0, modifiedMetadata)
-
-			modifiedMetadata = await getDummyEncodedMetadata(sbt, 'UserBURL')
-			await expect(
-				sbt.connect(signers.minterB).setTokenURI(1, modifiedMetadata)
+				sbt.connect(signers.minterA).setTokenURI(1, modifiedMetadata)
 			)
 				.to.be.emit(sbt, 'SetSBTTokenURI')
 				.withArgs(1, modifiedMetadata)
+
+			modifiedMetadata = await getDummyEncodedMetadata(sbt, 'UserBURL')
+			await expect(
+				sbt.connect(signers.minterB).setTokenURI(2, modifiedMetadata)
+			)
+				.to.be.emit(sbt, 'SetSBTTokenURI')
+				.withArgs(2, modifiedMetadata)
 		})
 	})
 })

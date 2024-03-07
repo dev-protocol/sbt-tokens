@@ -41,9 +41,9 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			const uriInfo: string[] = uri.split(',')
 			expect(uriInfo[0]).to.equal('data:application/json;base64')
 			const decodedData = JSON.parse(
@@ -80,9 +80,9 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			const uriInfo: string[] = uri.split(',')
 			expect(uriInfo[0]).to.equal('data:application/json;base64')
 			const decodedData = JSON.parse(
@@ -130,9 +130,9 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			const uriInfo: string[] = uri.split(',')
 			expect(uriInfo[0]).to.equal('data:application/json;base64')
 			const decodedData = JSON.parse(
@@ -192,9 +192,9 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			const uriInfo: string[] = uri.split(',')
 			expect(uriInfo[0]).to.equal('data:application/json;base64')
 			const decodedData = JSON.parse(
@@ -255,9 +255,9 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			const uriInfo: string[] = uri.split(',')
 			expect(uriInfo[0]).to.equal('data:application/json;base64')
 			const decodedData = JSON.parse(
@@ -328,9 +328,9 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			const uriInfo: string[] = uri.split(',')
 			expect(uriInfo[0]).to.equal('data:application/json;base64')
 			const decodedData = JSON.parse(
@@ -400,9 +400,9 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			const uriInfo: string[] = uri.split(',')
 			expect(uriInfo[0]).to.equal('data:application/json;base64')
 			const decodedData = JSON.parse(
@@ -482,7 +482,7 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			const offChainEncodedParams = Buffer.from(
 				JSON.stringify({
@@ -495,7 +495,7 @@ describe('SBT', () => {
 			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
 				offChainEncodedParams
 			)
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			expect(uri).to.deep.eq(offChainEncodedMetadata)
 		})
 
@@ -519,7 +519,7 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			const offChainEncodedParams = Buffer.from(
 				JSON.stringify({
@@ -532,7 +532,7 @@ describe('SBT', () => {
 			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
 				offChainEncodedParams
 			)
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			expect(uri).to.deep.eq(offChainEncodedMetadata)
 		})
 
@@ -560,7 +560,7 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			const offChainEncodedParams = Buffer.from(
 				JSON.stringify({
@@ -577,7 +577,7 @@ describe('SBT', () => {
 			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
 				offChainEncodedParams
 			)
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			expect(uri).to.deep.eq(offChainEncodedMetadata)
 		})
 
@@ -607,7 +607,7 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			const offChainEncodedParams = Buffer.from(
 				JSON.stringify({
@@ -626,7 +626,7 @@ describe('SBT', () => {
 			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
 				offChainEncodedParams
 			)
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			expect(uri).to.deep.eq(offChainEncodedMetadata)
 		})
 
@@ -662,7 +662,7 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			const offChainEncodedParams = Buffer.from(
 				JSON.stringify({
@@ -691,7 +691,7 @@ describe('SBT', () => {
 			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
 				offChainEncodedParams
 			)
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			expect(uri).to.deep.eq(offChainEncodedMetadata)
 		})
 
@@ -721,7 +721,7 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			const offChainEncodedParams = Buffer.from(
 				JSON.stringify({
@@ -741,7 +741,7 @@ describe('SBT', () => {
 			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
 				offChainEncodedParams
 			)
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			expect(uri).to.deep.eq(offChainEncodedMetadata)
 		})
 
@@ -781,7 +781,7 @@ describe('SBT', () => {
 					.mint(signers.userA.address, encodedMetadata)
 			)
 				.to.emit(sbt, 'Minted')
-				.withArgs(0, signers.userA.address)
+				.withArgs(1, signers.userA.address)
 
 			const offChainEncodedParams = Buffer.from(
 				JSON.stringify({
@@ -813,7 +813,7 @@ describe('SBT', () => {
 			const offChainEncodedMetadata = 'data:application/json;base64,'.concat(
 				offChainEncodedParams
 			)
-			const uri = await sbt.tokenURI(0)
+			const uri = await sbt.tokenURI(1)
 			expect(uri).to.deep.eq(offChainEncodedMetadata)
 		})
 	})
