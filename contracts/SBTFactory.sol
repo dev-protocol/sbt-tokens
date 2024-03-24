@@ -43,9 +43,6 @@ contract SBTFactory is Ownable {
 		// Save the proxy created in mapping.
 		sbtProxyMapping[identifier] = address(proxy);
 
-		// Initialize the implementation.
-		SBT(implementation).initialize(minterUpdater, minters);
-
 		// Initialize the proxy.
 		SBT(proxy).initialize(minterUpdater, minters);
 
