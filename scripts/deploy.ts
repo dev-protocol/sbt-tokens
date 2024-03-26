@@ -46,7 +46,7 @@ async function main() {
 	)) as ContractTransaction
 	console.log(` - Initializing at transaction with hash:${tx.hash}`)
 	await tx.wait(1)
-	console.log(` - Initializing done at transaction with hash:${tx.hash}`)
+	console.log(` - Initializing done.`)
 	console.log()
 
 	// >>> Verify SBTImplementation code >>>
@@ -55,17 +55,20 @@ async function main() {
 		address: sbtImplementation.address,
 		constructorArguments: [],
 	})
+	console.log()
 
 	// >>> Verify SBTProxy code >>>
 	console.log('Verifying SBT proxy contract')
 	await run(`verify:verify`, {
 		address: sbtProxyInstance.address,
+		contract: 'contracts/SBTProxy.sol:SBTProxy',
 		constructorArguments: [
 			sbtImplementation.address,
 			proxyAdmin,
 			ethers.utils.arrayify('0x'),
 		],
 	})
+	console.log()
 }
 
 main()
