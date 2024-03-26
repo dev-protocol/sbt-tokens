@@ -13,7 +13,7 @@ async function main() {
 	// @TODO: modify this when deploying...
 	const minters = [signer.address]
 	// @TODO: modify this address when deploying...
-	const proxyAdmin = '0x2e8fCbd8d3968252f1FC427Ff06928343B650bc3'
+	const proxyAdmin = '0xec4562C829661c891FcEadb44F831c8a5e71bC8F'
 
 	// >>> Deploy SBT implementation >>>
 	console.log('Deploying SBT implementation...')
