@@ -19,9 +19,9 @@ async function main() {
 	// @TODO: modify this address when deploying...
 	const proxyAdmin = '0xec4562C829661c891FcEadb44F831c8a5e71bC8F'
 	// @TODO: check and change this whenever required.
-	const sbtFactoryAddress = ''
-	// @TODO: check and change this whenever required.
 	const identifier = ethers.utils.formatBytes32String('First SBT')
+	// @TODO: check and change this whenever required.
+	const sbtFactoryAddress = '0x0F0b8697169aF45FC61814C3e5b4d784a909b9A7'
 
 	// >>> Deploy using SBTFactory >>>
 	console.log('Deploying new SBT using SBTFactory...')
