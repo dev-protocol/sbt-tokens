@@ -1047,6 +1047,22 @@ describe('SBTProxy', () => {
 				).to.be.revertedWith(
 					'TransparentUpgradeableProxy: admin cannot fallback to proxy target'
 				)
+
+				const uri = await sbt.tokenURI(1)
+				const uriInfo: string[] = uri.split(',')
+				expect(uriInfo[0]).to.equal('data:application/json;base64')
+				const decodedData = JSON.parse(
+					Buffer.from(uriInfo[1], 'base64').toString()
+				) as {
+					name: string
+					description: string
+					image: string
+					attributes: any[]
+				}
+				expect(decodedData.name).to.eq(metadata.name)
+				expect(decodedData.description).to.eq(metadata.description)
+				expect(decodedData.image).to.eq(metadata.tokenURIImage)
+				expect(decodedData.attributes.length).to.eq(0)
 			})
 
 			it('The setTokenURI function should function correctly for no attributes', async () => {
