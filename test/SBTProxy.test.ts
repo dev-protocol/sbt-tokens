@@ -40,7 +40,7 @@ describe('SBTProxy', () => {
 		return { sbt, sbtImplementation, sbtProxy, sbtImplementationB }
 	}
 
-	describe('SBT proxy tests', () => {
+	describe('----SBT proxy tests------------', () => {
 		describe('admin', () => {
 			it('Should return admin correctly if signer is proxyAdmin', async () => {
 				const signers = await getSigners()
@@ -460,8 +460,24 @@ describe('SBTProxy', () => {
 		})
 	})
 
-	describe('SBT logic tests', () => {
+	describe('----SBT logic tests------------', () => {
 		describe('initialize', () => {
+			it('Proxy admin should not be able to call implementation functions', async () => {
+				const { sbt } = await init()
+				const { proxyAdmin } = await getSigners()
+
+				await expect(
+					sbt
+						.connect(proxyAdmin)
+						.initialize(constants.AddressZero, [
+							constants.AddressZero,
+							constants.AddressZero,
+						])
+				).to.be.revertedWith(
+					'TransparentUpgradeableProxy: admin cannot fallback to proxy target'
+				)
+			})
+
 			it('The initialize function can only be executed once', async () => {
 				const { sbt } = await init()
 				await expect(
@@ -474,6 +490,17 @@ describe('SBTProxy', () => {
 		})
 
 		describe('addMinter', () => {
+			it('Proxy admin should not be able to call implementation functions', async () => {
+				const { sbt } = await init()
+				const signers = await getSigners()
+
+				await expect(
+					sbt.connect(signers.proxyAdmin).addMinter(signers.minterC.address)
+				).to.be.revertedWith(
+					'TransparentUpgradeableProxy: admin cannot fallback to proxy target'
+				)
+			})
+
 			it('The addMinter function can be executed by minterUpdater', async () => {
 				const { sbt } = await init()
 				const signers = await getSigners()
@@ -502,6 +529,17 @@ describe('SBTProxy', () => {
 		})
 
 		describe('removeMinter', () => {
+			it('Proxy admin should not be able to call implementation functions', async () => {
+				const { sbt } = await init()
+				const signers = await getSigners()
+
+				await expect(
+					sbt.connect(signers.proxyAdmin).removeMinter(signers.minterA.address)
+				).to.be.revertedWith(
+					'TransparentUpgradeableProxy: admin cannot fallback to proxy target'
+				)
+			})
+
 			it('The removeMinter function can be executed by minterUpdater', async () => {
 				const { sbt } = await init()
 				const signers = await getSigners()
@@ -532,6 +570,18 @@ describe('SBTProxy', () => {
 		})
 
 		describe('mint', () => {
+			it('Proxy admin should not be able to call implementation functions', async () => {
+				const { sbt } = await init()
+				const signers = await getSigners()
+
+				const metadata = await getDummyEncodedMetadata(sbt)
+				await expect(
+					sbt.connect(signers.proxyAdmin).mint(signers.userA.address, metadata)
+				).to.be.revertedWith(
+					'TransparentUpgradeableProxy: admin cannot fallback to proxy target'
+				)
+			})
+
 			it('The mint function should function correctly', async () => {
 				const { sbt } = await init()
 				const signers = await getSigners()
@@ -713,6 +763,26 @@ describe('SBTProxy', () => {
 		})
 
 		describe('transfer', () => {
+			it('Proxy admin should not be able to call implementation functions', async () => {
+				const { sbt } = await init()
+				const signers = await getSigners()
+
+				const metadata = await getDummyEncodedMetadata(sbt)
+				await expect(
+					sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+				)
+					.to.emit(sbt, 'Minted')
+					.withArgs(1, signers.userA.address)
+
+				await expect(
+					sbt
+						.connect(signers.proxyAdmin)
+						.transferFrom(signers.userA.address, signers.userB.address, 1)
+				).to.be.revertedWith(
+					'TransparentUpgradeableProxy: admin cannot fallback to proxy target'
+				)
+			})
+
 			it('The transfer function should not work if owner', async () => {
 				const { sbt } = await init()
 				const signers = await getSigners()
@@ -773,6 +843,26 @@ describe('SBTProxy', () => {
 		})
 
 		describe('burn', () => {
+			it('Proxy admin should not be able to call implementation functions', async () => {
+				const { sbt } = await init()
+				const signers = await getSigners()
+
+				const metadata = await getDummyEncodedMetadata(sbt)
+				await expect(
+					sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+				)
+					.to.emit(sbt, 'Minted')
+					.withArgs(1, signers.userA.address)
+
+				await expect(
+					sbt
+						.connect(signers.proxyAdmin)
+						.transferFrom(signers.userA.address, constants.AddressZero, 1)
+				).to.be.revertedWith(
+					'TransparentUpgradeableProxy: admin cannot fallback to proxy target'
+				)
+			})
+
 			it('The transfer to address(0) should not work if owner', async () => {
 				const { sbt } = await init()
 				const signers = await getSigners()
@@ -833,6 +923,30 @@ describe('SBTProxy', () => {
 		})
 
 		describe('safeTransfer', () => {
+			it('Proxy admin should not be able to call implementation functions', async () => {
+				const { sbt } = await init()
+				const signers = await getSigners()
+
+				const metadata = await getDummyEncodedMetadata(sbt)
+				await expect(
+					sbt.connect(signers.minterA).mint(signers.userA.address, metadata)
+				)
+					.to.emit(sbt, 'Minted')
+					.withArgs(1, signers.userA.address)
+
+				await expect(
+					sbt
+						.connect(signers.proxyAdmin)
+						['safeTransferFrom(address,address,uint256)'](
+							signers.userA.address,
+							signers.userB.address,
+							1
+						)
+				).to.be.revertedWith(
+					'TransparentUpgradeableProxy: admin cannot fallback to proxy target'
+				)
+			})
+
 			it('The safeTransfer function should not work if owner', async () => {
 				const sbtContractFactory = await ethers.getContractFactory('SBT')
 				const sbt = sbtContractFactory.attach((await init()).sbt.address)
@@ -906,6 +1020,35 @@ describe('SBTProxy', () => {
 		})
 
 		describe('setTokenURI', () => {
+			it('Proxy admin should not be able to call implementation functions', async () => {
+				const { sbt } = await init()
+				const signers = await getSigners()
+
+				const metadata = {
+					name: 'Proof of service NFT',
+					description:
+						'This is a proof of service NFT, which indicates your contribution to the project',
+					tokenURIImage:
+						'https://i.guim.co.uk/img/media/ef8492feb3715ed4de705727d9f513c168a8b196/37_0_1125_675/master/1125.jpg?width=1200&height=1200&quality=85&auto=format&fit=crop&s=d456a2af571d980d8b2985472c262b31',
+					stringAttributes: [],
+					numberAttributes: [],
+				}
+				const encodedMetadata = await getEncodedMetadata(sbt, metadata)
+				await expect(
+					sbt
+						.connect(signers.minterA)
+						.mint(signers.userA.address, encodedMetadata)
+				)
+					.to.emit(sbt, 'Minted')
+					.withArgs(1, signers.userA.address)
+
+				await expect(
+					sbt.connect(signers.proxyAdmin).tokenURI(1)
+				).to.be.revertedWith(
+					'TransparentUpgradeableProxy: admin cannot fallback to proxy target'
+				)
+			})
+
 			it('The setTokenURI function should function correctly for no attributes', async () => {
 				const { sbt } = await init()
 				const signers = await getSigners()
