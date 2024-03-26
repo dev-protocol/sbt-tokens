@@ -10,9 +10,6 @@ dotenv.config()
 const mnemnoc =
 	typeof process.env.MNEMONIC === 'undefined' ? '' : process.env.MNEMONIC
 
-const privateKey =
-	typeof process.env.PRIVATE_KEY === 'undefined' ? '' : process.env.PRIVATE_KEY
-
 const config: HardhatUserConfig = {
 	solidity: {
 		compilers: [
@@ -39,44 +36,34 @@ const config: HardhatUserConfig = {
 	networks: {
 		mainnet: {
 			url: `https://mainnet.infura.io/v3/${process.env.INFURA_KEY!}`,
-			accounts: mnemnoc
-				? {
-						mnemonic: mnemnoc,
-				  }
-				: [privateKey],
+			accounts: {
+				mnemonic: mnemnoc,
+			},
 		},
 		arbitrumOne: {
 			url: `https://arbitrum-mainnet.infura.io/v3/${process.env.INFURA_KEY!}`,
-			accounts: mnemnoc
-				? {
-						mnemonic: mnemnoc,
-				  }
-				: [privateKey],
+			accounts: {
+				mnemonic: mnemnoc,
+			},
 		},
 		arbitrumRinkeby: {
 			url: `https://arbitrum-rinkeby.infura.io/v3/${process.env.INFURA_KEY!}`,
-			accounts: mnemnoc
-				? {
-						mnemonic: mnemnoc,
-				  }
-				: [privateKey],
+			accounts: {
+				mnemonic: mnemnoc,
+			},
 		},
 		polygonMainnet: {
 			url: `https://polygon-mainnet.infura.io/v3/${process.env.INFURA_KEY!}`,
-			accounts: mnemnoc
-				? {
-						mnemonic: mnemnoc,
-				  }
-				: [privateKey],
+			accounts: {
+				mnemonic: mnemnoc,
+			},
 		},
 		polygonMumbai: {
 			url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env
 				.ALCHEMY_API_KEY!}`,
-			accounts: mnemnoc
-				? {
-						mnemonic: mnemnoc,
-				  }
-				: [privateKey],
+			accounts: {
+				mnemonic: mnemnoc,
+			},
 		},
 	},
 	etherscan: {
