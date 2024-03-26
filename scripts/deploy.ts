@@ -50,7 +50,7 @@ async function main() {
 	console.log()
 
 	// >>> Verify SBTImplementation code >>>
-	console.log('Verifying SBT implementation contract')
+	console.log('Verifying SBT implementation contract...')
 	await run(`verify:verify`, {
 		address: sbtImplementation.address,
 		constructorArguments: [],
@@ -58,7 +58,7 @@ async function main() {
 	console.log()
 
 	// >>> Verify SBTProxy code >>>
-	console.log('Verifying SBT proxy contract')
+	console.log('Verifying SBT proxy contract...')
 	await run(`verify:verify`, {
 		address: sbtProxyInstance.address,
 		contract: 'contracts/SBTProxy.sol:SBTProxy',
