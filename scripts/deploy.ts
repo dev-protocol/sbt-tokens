@@ -19,10 +19,15 @@ async function main() {
 	console.log('Deploying SBT implementation...')
 	const sbtFactory = await ethers.getContractFactory('SBT')
 	const sbtImplementation = await sbtFactory.deploy()
+	const sbtImplementationDeployTxn = sbtImplementation.deployTransaction
+	console.log(
+		` - SBT implementation deploying at txn hash:${sbtImplementationDeployTxn.hash}`
+	)
 	await sbtImplementation.deployed()
 	console.log(
 		` - SBT implementation deployed at address:${sbtImplementation.address}`
 	)
+	await sbtImplementationDeployTxn.wait(2)
 	console.log()
 
 	// >>> Deploy SBTProxy >>>
@@ -33,8 +38,13 @@ async function main() {
 		proxyAdmin,
 		ethers.utils.arrayify('0x')
 	)
+	const sbtProxyInstanceDeployTxn = sbtProxyInstance.deployTransaction
+	console.log(
+		` - SBT proxy deploying at txn hash:${sbtProxyInstanceDeployTxn.hash}`
+	)
 	await sbtProxyInstance.deployed()
 	console.log(` - SBT proxy deployed at address:${sbtProxyInstance.address}`)
+	await sbtProxyInstanceDeployTxn.wait(2)
 	console.log()
 
 	// >>> Initialize SBT Proxy >>>
