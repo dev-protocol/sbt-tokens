@@ -3,6 +3,8 @@
 import { ethers, run } from 'hardhat'
 import type { ContractTransaction } from 'ethers'
 
+import { wait } from './utils/wait'
+
 async function main() {
 	console.log('Starting deploySBTFactory script on sbt-tokens...')
 
@@ -19,7 +21,7 @@ async function main() {
 	// @TODO: modify this address when deploying...
 	const proxyAdmin = '0xec4562C829661c891FcEadb44F831c8a5e71bC8F'
 	// @TODO: check and change this whenever required.
-	const identifier = ethers.utils.formatBytes32String('First SBT')
+	const identifier = ethers.utils.formatBytes32String('Test Achievement SBT')
 	// @TODO: check and change this whenever required.
 	const sbtFactoryAddress = '0x0F0b8697169aF45FC61814C3e5b4d784a909b9A7'
 
@@ -37,10 +39,17 @@ async function main() {
 		identifier
 	)) as ContractTransaction
 	console.log(` - SBT deployment using SBTFactory at txn:${txn.hash}`)
-	const txReceipt = await txn.wait(2)
-	const logs = txReceipt.logs.map((log) =>
-		sbtFactoryInstance.interface.parseLog(log)
-	)
+	const txReceipt = await txn.wait(10)
+	const logs = txReceipt.logs.map((log) => {
+		try {
+			// Because here events/logs contains some deployment/general blockchain events which cannot be parsed by contract.interface.
+			const l = sbtFactoryInstance.interface.parseLog(log)
+			return l
+		} catch (err) {
+			// Hence, we are removing those as we do not need those events.
+			return { name: '', args: [] }
+		}
+	})
 	const proxyCreationLog = logs.find((log) => log.name === 'SBTProxyCreated')
 	const implementationCreationLog = logs.find(
 		(log) => log.name === 'SBTImplementationCreated'
@@ -51,6 +60,7 @@ async function main() {
 		1
 	) as string
 
+	await wait(30 * 1000) // For block explorer to scan newly deployed address and attach it's bytecode to it.
 	if (implementationCreationLog) {
 		console.log(
 			` - SBT implementation deployed at addr:${implementationContractAddress}`
@@ -62,6 +72,8 @@ async function main() {
 			constructorArguments: [],
 		})
 	}
+
+	await wait(30 * 1000) // For block explorer to scan newly deployed address and attach it's bytecode to it.
 
 	if (proxyCreationLog) {
 		console.log(` - SBT proxy deployed at addr:${proxyContractAddress}`)
