@@ -63,6 +63,16 @@ export const deployWithArg = async (
 	return contract
 }
 
+export const deployWithArgs = async (
+	name: string,
+	args: Array<number | string | Uint8Array>
+): Promise<Contract> => {
+	const factory = await ethers.getContractFactory(name)
+	const contract = await factory.deploy(...args)
+	await contract.deployed()
+	return contract
+}
+
 export const deployWith2Arg = async (
 	name: string,
 	arg1: number | string,
