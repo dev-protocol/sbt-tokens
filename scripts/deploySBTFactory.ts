@@ -21,7 +21,7 @@ async function main() {
 	console.log()
 
 	// >>> Verify SBTFactory code >>>
-	console.log('Verifying SBT implementation contract...')
+	console.log('Verifying SBTFactory contract...')
 	await run(`verify:verify`, {
 		address: sbtFactoryInstance.address,
 		constructorArguments: [],
