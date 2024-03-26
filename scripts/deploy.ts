@@ -1,4 +1,5 @@
 import { ethers, run } from 'hardhat'
+import { type ContractTransaction } from 'ethers'
 
 async function main() {
 	console.log('Starting deploy script on sbt-tokens...')
@@ -39,7 +40,13 @@ async function main() {
 	// >>> Initialize SBT Proxy >>>
 	console.log('Initializing SBT proxy...')
 	const sbtProxy = sbtFactory.attach(sbtProxyInstance.address)
-	await sbtProxy.functions.initialize(minterUpdater, minters)
+	const tx = (await sbtProxy.functions.initialize(
+		minterUpdater,
+		minters
+	)) as ContractTransaction
+	console.log(` - Initializing at transaction with hash:${tx.hash}`)
+	await tx.wait(1)
+	console.log(` - Initializing done at transaction with hash:${tx.hash}`)
 
 	// >>> Verify SBTImplementation code >>>
 	await run(`verify:verify`, {
