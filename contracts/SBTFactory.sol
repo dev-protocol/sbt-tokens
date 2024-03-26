@@ -1,12 +1,13 @@
 // SPDX-License-Identifier: MPL-2.0
 pragma solidity =0.8.9;
 
-import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
+import {OwnableUpgradeable} from "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
 import {SBT} from "./SBT.sol";
 import {SBTProxy} from "./SBTProxy.sol";
+import {ISBTFactory} from "./interfaces/ISBTFactory.sol";
 
-contract SBTFactory is Ownable {
+contract SBTFactory is ISBTFactory, OwnableUpgradeable {
 	mapping(bytes => address) public sbtProxyMapping;
 
 	event SBTProxyCreated(bytes indexed identifier, address sbtProxyAddress);
@@ -15,7 +16,9 @@ contract SBTFactory is Ownable {
 		address sbtProxyAddress
 	);
 
-	constructor() {}
+	function initialize() external initializer {
+		__Ownable_init();
+	}
 
 	function makeNewSBT(
 		address proxyAdmin,
@@ -23,7 +26,7 @@ contract SBTFactory is Ownable {
 		address minterUpdater,
 		address[] calldata minters,
 		bytes calldata identifier
-	) external onlyOwner returns (address) {
+	) external override onlyOwner returns (address) {
 		// Create the implementation.
 		address implementation = address(
 			new SBT{salt: keccak256(identifier)}()
