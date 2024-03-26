@@ -21,9 +21,11 @@ describe('SBTProxy', () => {
 		sbt: Contract
 		sbtImplementation: Contract
 		sbtProxy: Contract
+		sbtImplementationB: Contract
 	}> => {
 		const signers = await getSigners()
 		const sbtImplementation = await deploy('SBT')
+		const sbtImplementationB = await deploy('SBT')
 		const sbtProxy = await deployWithArgs('SBTProxy', [
 			sbtImplementation.address,
 			signers.proxyAdmin.address,
@@ -35,10 +37,430 @@ describe('SBTProxy', () => {
 			signers.minterB.address,
 		])
 
-		return { sbt, sbtImplementation, sbtProxy }
+		return { sbt, sbtImplementation, sbtProxy, sbtImplementationB }
 	}
 
-	describe('SBT tests', () => {
+	describe('SBT proxy tests', () => {
+		describe('admin', () => {
+			it('Should return admin correctly if signer is proxyAdmin', async () => {
+				const signers = await getSigners()
+				const { sbt, sbtProxy } = await init()
+				expect(sbt.address).to.eq(sbtProxy.address)
+				expect(
+					await sbtProxy.connect(signers.proxyAdmin).callStatic.admin()
+				).to.eq(signers.proxyAdmin.address)
+			})
+
+			it('Should not return admin correctly if signer is not proxyAdmin', async () => {
+				const signers = await getSigners()
+				const { sbt, sbtProxy } = await init()
+				expect(sbt.address).to.eq(sbtProxy.address)
+				await expect(sbtProxy.connect(signers.userA).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.userB).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterA).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterB).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterC).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterUpdater).callStatic.admin())
+					.to.reverted
+				await expect(sbtProxy.connect(signers.deployer).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.proxyAdminB).callStatic.admin())
+					.to.reverted
+			})
+		})
+
+		describe('implementation', () => {
+			it('Should return admin correctly if signer is proxyAdmin', async () => {
+				const signers = await getSigners()
+				const { sbt, sbtProxy, sbtImplementation } = await init()
+				expect(sbt.address).to.eq(sbtProxy.address)
+				expect(
+					await sbtProxy.connect(signers.proxyAdmin).callStatic.implementation()
+				).to.eq(sbtImplementation.address)
+			})
+
+			it('Should not return implementation correctly if signer is not proxyAdmin', async () => {
+				const signers = await getSigners()
+				const { sbt, sbtProxy } = await init()
+				expect(sbt.address).to.eq(sbtProxy.address)
+				await expect(
+					sbtProxy.connect(signers.userA).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.userB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterUpdater).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterA).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterC).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.deployer).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.proxyAdminB).callStatic.implementation()
+				).to.reverted
+			})
+		})
+
+		describe('changeAdmin', () => {
+			it('Should changeAdmin correctly if signer is proxyAdmin', async () => {
+				const signers = await getSigners()
+				const { sbt, sbtProxy } = await init()
+				expect(sbt.address).to.eq(sbtProxy.address)
+				expect(
+					await sbtProxy.connect(signers.proxyAdmin).callStatic.admin()
+				).to.eq(signers.proxyAdmin.address)
+				await expect(sbtProxy.connect(signers.proxyAdminB).callStatic.admin())
+					.to.reverted
+				await expect(sbtProxy.connect(signers.userA).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.userB).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterUpdater).callStatic.admin())
+					.to.reverted
+				await expect(sbtProxy.connect(signers.minterA).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterB).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterC).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.deployer).callStatic.admin()).to
+					.reverted
+
+				await expect(
+					sbtProxy
+						.connect(signers.proxyAdmin)
+						.changeAdmin(signers.proxyAdminB.address)
+				)
+					.to.emit(sbtProxy, 'AdminChanged')
+					.withArgs(signers.proxyAdmin.address, signers.proxyAdminB.address)
+
+				expect(
+					await sbtProxy.connect(signers.proxyAdminB).callStatic.admin()
+				).to.eq(signers.proxyAdminB.address)
+				await expect(sbtProxy.connect(signers.proxyAdmin).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.userA).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.userB).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterUpdater).callStatic.admin())
+					.to.reverted
+				await expect(sbtProxy.connect(signers.minterA).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterB).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterC).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.deployer).callStatic.admin()).to
+					.reverted
+			})
+
+			it('Should not changeAdmin correctly if signer is not proxyAdmin', async () => {
+				const signers = await getSigners()
+				const { sbt, sbtProxy } = await init()
+				expect(sbt.address).to.eq(sbtProxy.address)
+				expect(
+					await sbtProxy.connect(signers.proxyAdmin).callStatic.admin()
+				).to.eq(signers.proxyAdmin.address)
+				await expect(sbtProxy.connect(signers.proxyAdminB).callStatic.admin())
+					.to.reverted
+				await expect(sbtProxy.connect(signers.userA).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.userB).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterUpdater).callStatic.admin())
+					.to.reverted
+				await expect(sbtProxy.connect(signers.minterA).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterB).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterC).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.deployer).callStatic.admin()).to
+					.reverted
+
+				await expect(
+					sbtProxy
+						.connect(signers.proxyAdminB)
+						.changeAdmin(signers.proxyAdminB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.deployer)
+						.changeAdmin(signers.proxyAdminB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.userA)
+						.changeAdmin(signers.proxyAdminB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.userB)
+						.changeAdmin(signers.proxyAdminB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.minterUpdater)
+						.changeAdmin(signers.proxyAdminB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.minterA)
+						.changeAdmin(signers.proxyAdminB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.minterB)
+						.changeAdmin(signers.proxyAdminB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.minterC)
+						.changeAdmin(signers.proxyAdminB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+
+				expect(
+					await sbtProxy.connect(signers.proxyAdmin).callStatic.admin()
+				).to.eq(signers.proxyAdmin.address)
+				await expect(sbtProxy.connect(signers.proxyAdminB).callStatic.admin())
+					.to.reverted
+				await expect(sbtProxy.connect(signers.userA).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.userB).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterUpdater).callStatic.admin())
+					.to.reverted
+				await expect(sbtProxy.connect(signers.minterA).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterB).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.minterC).callStatic.admin()).to
+					.reverted
+				await expect(sbtProxy.connect(signers.deployer).callStatic.admin()).to
+					.reverted
+			})
+		})
+
+		describe('upgradeTo', () => {
+			it('Should upgradeTo correctly if signer is proxyAdmin', async () => {
+				const signers = await getSigners()
+				const { sbt, sbtProxy, sbtImplementation, sbtImplementationB } =
+					await init()
+				expect(sbt.address).to.eq(sbtProxy.address)
+				expect(
+					await sbtProxy.connect(signers.proxyAdmin).callStatic.implementation()
+				).to.eq(sbtImplementation.address)
+				await expect(
+					sbtProxy.connect(signers.proxyAdminB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.userA).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.userB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterUpdater).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterA).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterC).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.deployer).callStatic.implementation()
+				).to.reverted
+
+				await expect(
+					sbtProxy
+						.connect(signers.proxyAdmin)
+						.upgradeTo(sbtImplementationB.address)
+				)
+					.to.emit(sbtProxy, 'Upgraded')
+					.withArgs(sbtImplementationB.address)
+
+				expect(
+					await sbtProxy.connect(signers.proxyAdmin).callStatic.implementation()
+				).to.eq(sbtImplementationB.address)
+				await expect(
+					sbtProxy.connect(signers.proxyAdminB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.userA).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.userB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterUpdater).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterA).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterC).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.deployer).callStatic.implementation()
+				).to.reverted
+			})
+
+			it('Should not upgradeTo correctly if signer is not proxyAdmin', async () => {
+				const signers = await getSigners()
+				const { sbt, sbtProxy, sbtImplementation, sbtImplementationB } =
+					await init()
+				expect(sbt.address).to.eq(sbtProxy.address)
+				expect(
+					await sbtProxy.connect(signers.proxyAdmin).callStatic.implementation()
+				).to.eq(sbtImplementation.address)
+				await expect(
+					sbtProxy.connect(signers.proxyAdminB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.userA).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.userB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterUpdater).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterA).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterC).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.deployer).callStatic.implementation()
+				).to.reverted
+
+				await expect(
+					sbtProxy
+						.connect(signers.proxyAdminB)
+						.upgradeTo(sbtImplementationB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.deployer)
+						.upgradeTo(sbtImplementationB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy.connect(signers.userA).upgradeTo(sbtImplementationB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy.connect(signers.userB).upgradeTo(sbtImplementationB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.minterUpdater)
+						.upgradeTo(sbtImplementationB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.minterA)
+						.upgradeTo(sbtImplementationB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.minterB)
+						.upgradeTo(sbtImplementationB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+				await expect(
+					sbtProxy
+						.connect(signers.minterC)
+						.upgradeTo(sbtImplementationB.address)
+				).to.revertedWith(
+					`function selector was not recognized and there's no fallback function`
+				)
+
+				expect(
+					await sbtProxy.connect(signers.proxyAdmin).callStatic.implementation()
+				).to.eq(sbtImplementation.address)
+				await expect(
+					sbtProxy.connect(signers.proxyAdminB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.userA).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.userB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterUpdater).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterA).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterB).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.minterC).callStatic.implementation()
+				).to.reverted
+				await expect(
+					sbtProxy.connect(signers.deployer).callStatic.implementation()
+				).to.reverted
+			})
+		})
+	})
+
+	describe('SBT logic tests', () => {
 		describe('initialize', () => {
 			it('The initialize function can only be executed once', async () => {
 				const { sbt } = await init()
