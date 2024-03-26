@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-
 import '@typechain/hardhat'
 import * as dotenv from 'dotenv'
 import '@nomiclabs/hardhat-ethers'
@@ -81,7 +79,7 @@ const config: HardhatUserConfig = {
 				: [privateKey],
 		},
 	},
-	Etherscan: {
+	etherscan: {
 		apiKey: {
 			...((k) => (k ? { mainnet: k } : undefined))(process.env.ETHERSCAN_KEY),
 			...((k) => (k ? { arbitrumOne: k, arbitrumTestnet: k } : undefined))(
