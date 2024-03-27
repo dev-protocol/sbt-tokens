@@ -17,7 +17,9 @@ import {
 use(solidity)
 
 describe('SBTProxy', () => {
-	const init = async (shouldAlsoInitializeProxy = true): Promise<{
+	const init = async (
+		shouldAlsoInitializeProxy = true
+	): Promise<{
 		sbt: Contract
 		sbtImplementation: Contract
 		sbtProxy: Contract
@@ -499,10 +501,7 @@ describe('SBTProxy', () => {
 					.connect(signers.minterUpdater)
 					.interface.encodeFunctionData('initialize', [
 						signers.minterUpdater.address,
-						[
-							signers.minterA.address,
-							signers.minterB.address,
-						]
+						[signers.minterA.address, signers.minterB.address],
 					])
 				await expect(
 					sbtProxy
@@ -512,10 +511,14 @@ describe('SBTProxy', () => {
 					.to.emit(sbtProxy, 'Upgraded')
 					.withArgs(sbtImplementationB.address)
 
-				await expect(sbt.connect(signers.userA).initialize(signers.minterUpdater.address, [
-					signers.minterA.address,
-					signers.minterB.address,
-				])).to.revertedWith('Initializable: contract is already initialized')
+				await expect(
+					sbt
+						.connect(signers.userA)
+						.initialize(signers.minterUpdater.address, [
+							signers.minterA.address,
+							signers.minterB.address,
+						])
+				).to.revertedWith('Initializable: contract is already initialized')
 
 				expect(
 					await sbtProxy.connect(signers.proxyAdmin).callStatic.implementation()
@@ -580,14 +583,11 @@ describe('SBTProxy', () => {
 				).to.reverted
 
 				const encodedData = sbtImplementationB
-				.connect(signers.minterUpdater)
-				.interface.encodeFunctionData('initialize', [
-					signers.minterUpdater.address,
-					[
-						signers.minterA.address,
-						signers.minterB.address,
-					]
-				])
+					.connect(signers.minterUpdater)
+					.interface.encodeFunctionData('initialize', [
+						signers.minterUpdater.address,
+						[signers.minterA.address, signers.minterB.address],
+					])
 				await expect(
 					sbtProxy
 						.connect(signers.proxyAdminB)
@@ -595,14 +595,22 @@ describe('SBTProxy', () => {
 				).to.revertedWith(
 					`function selector was not recognized and there's no fallback function`
 				)
-				await expect(sbt.connect(signers.userA).initialize(signers.minterUpdater.address, [
-					signers.minterA.address,
-					signers.minterB.address,
-				])).to.not.reverted
-				await expect(sbt.connect(signers.userA).initialize(signers.minterUpdater.address, [
-					signers.minterA.address,
-					signers.minterB.address,
-				])).to.revertedWith('Initializable: contract is already initialized')
+				await expect(
+					sbt
+						.connect(signers.userA)
+						.initialize(signers.minterUpdater.address, [
+							signers.minterA.address,
+							signers.minterB.address,
+						])
+				).to.not.reverted
+				await expect(
+					sbt
+						.connect(signers.userA)
+						.initialize(signers.minterUpdater.address, [
+							signers.minterA.address,
+							signers.minterB.address,
+						])
+				).to.revertedWith('Initializable: contract is already initialized')
 
 				await expect(
 					sbtProxy
