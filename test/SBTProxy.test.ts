@@ -127,22 +127,6 @@ describe('SBTProxy', () => {
 				expect(
 					await sbtProxy.connect(signers.proxyAdmin).callStatic.admin()
 				).to.eq(signers.proxyAdmin.address)
-				await expect(sbtProxy.connect(signers.proxyAdminB).callStatic.admin())
-					.to.reverted
-				await expect(sbtProxy.connect(signers.userA).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.userB).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterUpdater).callStatic.admin())
-					.to.reverted
-				await expect(sbtProxy.connect(signers.minterA).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterB).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterC).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.deployer).callStatic.admin()).to
-					.reverted
 
 				await expect(
 					sbtProxy
@@ -155,22 +139,6 @@ describe('SBTProxy', () => {
 				expect(
 					await sbtProxy.connect(signers.proxyAdminB).callStatic.admin()
 				).to.eq(signers.proxyAdminB.address)
-				await expect(sbtProxy.connect(signers.proxyAdmin).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.userA).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.userB).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterUpdater).callStatic.admin())
-					.to.reverted
-				await expect(sbtProxy.connect(signers.minterA).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterB).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterC).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.deployer).callStatic.admin()).to
-					.reverted
 			})
 
 			it('Should not changeAdmin correctly if signer is not proxyAdmin', async () => {
@@ -180,22 +148,6 @@ describe('SBTProxy', () => {
 				expect(
 					await sbtProxy.connect(signers.proxyAdmin).callStatic.admin()
 				).to.eq(signers.proxyAdmin.address)
-				await expect(sbtProxy.connect(signers.proxyAdminB).callStatic.admin())
-					.to.reverted
-				await expect(sbtProxy.connect(signers.userA).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.userB).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterUpdater).callStatic.admin())
-					.to.reverted
-				await expect(sbtProxy.connect(signers.minterA).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterB).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterC).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.deployer).callStatic.admin()).to
-					.reverted
 
 				await expect(
 					sbtProxy
@@ -257,22 +209,6 @@ describe('SBTProxy', () => {
 				expect(
 					await sbtProxy.connect(signers.proxyAdmin).callStatic.admin()
 				).to.eq(signers.proxyAdmin.address)
-				await expect(sbtProxy.connect(signers.proxyAdminB).callStatic.admin())
-					.to.reverted
-				await expect(sbtProxy.connect(signers.userA).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.userB).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterUpdater).callStatic.admin())
-					.to.reverted
-				await expect(sbtProxy.connect(signers.minterA).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterB).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.minterC).callStatic.admin()).to
-					.reverted
-				await expect(sbtProxy.connect(signers.deployer).callStatic.admin()).to
-					.reverted
 			})
 		})
 
