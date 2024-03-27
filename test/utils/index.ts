@@ -16,6 +16,8 @@ type NumberAttributes = Array<{
 	value: number
 }>
 
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 export const deploy = async (name: string): Promise<Contract> => {
 	const factoryStrage = await ethers.getContractFactory(name)
 	const contract = await factoryStrage.deploy()
