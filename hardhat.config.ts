@@ -1,9 +1,9 @@
 import '@typechain/hardhat'
+import * as dotenv from 'dotenv'
 import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-waffle'
 import '@nomiclabs/hardhat-etherscan'
 import type { HardhatUserConfig } from 'hardhat/config'
-import * as dotenv from 'dotenv'
 
 dotenv.config()
 
@@ -59,7 +59,8 @@ const config: HardhatUserConfig = {
 			},
 		},
 		polygonMumbai: {
-			url: `https://polygon-mumbai.infura.io/v3/${process.env.INFURA_KEY!}`,
+			url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env
+				.ALCHEMY_API_KEY!}`,
 			accounts: {
 				mnemonic: mnemnoc,
 			},

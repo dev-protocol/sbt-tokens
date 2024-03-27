@@ -15,7 +15,8 @@
 		"build": "tsc -p tsconfig.build.json",
 		"prebuild": "yarn generate",
 		"clean": "del 'artifacts'",
-		"prepare": "husky install"
+		"prepare": "husky install",
+		"deploy:polygonMumbai": "npx hardhat run scripts/deploy.ts --network polygonMumbai"
 	},
 	"author": "Dev Protocol",
 	"license": "MPL-2.0",
