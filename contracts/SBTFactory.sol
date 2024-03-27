@@ -27,7 +27,10 @@ contract SBTFactory is ISBTFactory, OwnableUpgradeable {
 		address[] calldata minters,
 		bytes calldata identifier
 	) external override onlyOwner returns (address) {
-		require(sbtProxyMapping[identifier] == address(0), "Identifier already used");
+		require(
+			sbtProxyMapping[identifier] == address(0),
+			"Identifier already used"
+		);
 
 		// Create the implementation.
 		address implementation = address(
