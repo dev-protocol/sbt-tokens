@@ -1,4 +1,5 @@
-import { ethers, run } from 'hardhat'
+import { ethers, run, upgrades } from 'hardhat'
+import type { SBTFactory__factory } from '../typechain-types'
 
 async function main() {
 	console.log('Starting deploySBTFactory script on sbt-tokens...')
@@ -9,8 +10,11 @@ async function main() {
 
 	// >>> Deploy SBTFactory >>>
 	console.log('Deploying SBTFactory...')
-	const sbtFactoryFactory = await ethers.getContractFactory('SBTFactory')
-	const sbtFactoryInstance = await sbtFactoryFactory.deploy()
+	const sbtFactoryFactory = (await ethers.getContractFactory(
+		'SBTFactory'
+	)) as SBTFactory__factory
+	const sbtFactoryInstance = await upgrades.deployProxy(sbtFactoryFactory, [])
+
 	const sbtFactoryInstanceDeployTxn = sbtFactoryInstance.deployTransaction
 	console.log(
 		` - SBTFactory deploying at txn:${sbtFactoryInstanceDeployTxn.hash}`
