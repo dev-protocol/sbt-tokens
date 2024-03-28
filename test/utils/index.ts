@@ -16,6 +16,8 @@ type NumberAttributes = Array<{
 	value: number
 }>
 
+export const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 export const deploy = async (name: string): Promise<Contract> => {
 	const factoryStrage = await ethers.getContractFactory(name)
 	const contract = await factoryStrage.deploy()
@@ -63,6 +65,16 @@ export const deployWithArg = async (
 	return contract
 }
 
+export const deployWithArgs = async (
+	name: string,
+	args: Array<number | string | Uint8Array>
+): Promise<Contract> => {
+	const factory = await ethers.getContractFactory(name)
+	const contract = await factory.deploy(...args)
+	await contract.deployed()
+	return contract
+}
+
 export const deployWith2Arg = async (
 	name: string,
 	arg1: number | string,
@@ -95,6 +107,7 @@ type Signers = {
 	minterA: SignerWithAddress
 	minterB: SignerWithAddress
 	minterC: SignerWithAddress
+	proxyAdminB: SignerWithAddress
 }
 
 export const getSigners = async (): Promise<Signers> => {
@@ -107,7 +120,9 @@ export const getSigners = async (): Promise<Signers> => {
 		minterA,
 		minterB,
 		minterC,
+		proxyAdminB,
 	] = await ethers.getSigners()
+
 	return {
 		deployer,
 		proxyAdmin,
@@ -117,5 +132,6 @@ export const getSigners = async (): Promise<Signers> => {
 		minterA,
 		minterB,
 		minterC,
+		proxyAdminB,
 	}
 }
