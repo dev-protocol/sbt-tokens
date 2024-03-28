@@ -2,7 +2,7 @@ import '@typechain/hardhat'
 import * as dotenv from 'dotenv'
 import '@nomiclabs/hardhat-ethers'
 import '@nomiclabs/hardhat-waffle'
-import '@nomicfoundation/hardhat-verify'
+import '@nomiclabs/hardhat-etherscan'
 import '@openzeppelin/hardhat-upgrades'
 import type { HardhatUserConfig } from 'hardhat/config'
 
