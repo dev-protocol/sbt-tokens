@@ -5,6 +5,7 @@ import '@nomiclabs/hardhat-waffle'
 import '@nomiclabs/hardhat-etherscan'
 import '@openzeppelin/hardhat-upgrades'
 import type { HardhatUserConfig } from 'hardhat/config'
+import { utils } from 'ethers'
 
 dotenv.config()
 
@@ -58,6 +59,8 @@ const config: HardhatUserConfig = {
 			accounts: {
 				mnemonic: mnemnoc,
 			},
+			gas: 3000000,
+			gasPrice: utils.parseUnits('130', 'gwei').toNumber(),
 		},
 		polygonMumbai: {
 			url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env
