@@ -11,7 +11,7 @@ describe('SBT', () => {
 	const init = async (): Promise<Contract> => {
 		const signers = await getSigners()
 		const sbt = await deploy('SBT')
-		await sbt.initialize(signers.minterUpdater.address, [
+		await sbt.initialize('Test SBT', 'TESTSBT', signers.minterUpdater.address, [
 			signers.minterA.address,
 			signers.minterB.address,
 		])
@@ -22,7 +22,7 @@ describe('SBT', () => {
 		it('The initialize function can only be executed once', async () => {
 			const sbt = await init()
 			await expect(
-				sbt.initialize(constants.AddressZero, [
+				sbt.initialize('Test SBT', 'TESTSBT', constants.AddressZero, [
 					constants.AddressZero,
 					constants.AddressZero,
 				])

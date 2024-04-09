@@ -489,6 +489,8 @@ describe('SBTFactoryProxy', () => {
 				expect(await sbtFactory.sbtProxyMapping(identifier)).to.eq(ZERO_ADDRESS)
 				await expect(
 					sbtFactory.makeNewSBT(
+						'Test SBT',
+						'TESTSBT',
 						signers.proxyAdmin.address,
 						ethers.utils.arrayify('0x'),
 						signers.minterUpdater.address,
@@ -514,6 +516,8 @@ describe('SBTFactoryProxy', () => {
 					sbtFactory
 						.connect(signers.deployer)
 						.makeNewSBT(
+							'Test SBT',
+							'TESTSBT',
 							signers.proxyAdmin.address,
 							ethers.utils.arrayify('0x'),
 							signers.minterUpdater.address,
@@ -529,7 +533,7 @@ describe('SBTFactoryProxy', () => {
 				)
 			})
 
-			it('The makeNewSBT function should not execute if called by non-owner', async () => {
+			it('The makeNewSBT function should execute if called by non-owner', async () => {
 				const signers = await getSigners()
 				const { sbtFactory } = await init()
 
@@ -539,15 +543,21 @@ describe('SBTFactoryProxy', () => {
 					sbtFactory
 						.connect(signers.minterA)
 						.makeNewSBT(
+							'Test SBT',
+							'TESTSBT',
 							signers.proxyAdmin.address,
 							ethers.utils.arrayify('0x'),
 							signers.minterUpdater.address,
 							[signers.minterA.address, signers.minterB.address],
 							identifier
 						)
-				).to.revertedWith('Ownable: caller is not the owner')
+				)
+					.to.emit(sbtFactory, 'SBTImplementationCreated')
+					.emit(sbtFactory, 'SBTProxyCreated')
 
-				expect(await sbtFactory.sbtProxyMapping(identifier)).to.eq(ZERO_ADDRESS)
+				expect(await sbtFactory.sbtProxyMapping(identifier)).to.not.eq(
+					ZERO_ADDRESS
+				)
 			})
 		})
 
