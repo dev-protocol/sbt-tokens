@@ -28,7 +28,7 @@ contract SBTFactory is ISBTFactory, OwnableUpgradeable {
 		address minterUpdater,
 		address[] calldata minters,
 		bytes calldata identifier
-	) external override onlyOwner returns (address) {
+	) external override returns (address) {
 		require(
 			sbtProxyMapping[identifier] == address(0),
 			"Identifier already used"
