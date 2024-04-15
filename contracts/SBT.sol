@@ -58,10 +58,12 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 	}
 
 	function initialize(
+		string memory sbtName,
+		string memory sbtSymbol,
 		address minterUpdater,
 		address[] memory minters
 	) external initializer {
-		__ERC721_init("Dev Protocol SBT V1", "DEV-SBT-V1");
+		__ERC721_init(sbtName, sbtSymbol);
 
 		_minterUpdater = minterUpdater;
 		for (uint256 i = 0; i < minters.length; i++) {

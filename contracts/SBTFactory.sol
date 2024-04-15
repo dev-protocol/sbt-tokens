@@ -21,12 +21,14 @@ contract SBTFactory is ISBTFactory, OwnableUpgradeable {
 	}
 
 	function makeNewSBT(
+		string memory sbtName,
+		string memory sbtSymbol,
 		address proxyAdmin,
 		bytes memory proxyCallData,
 		address minterUpdater,
 		address[] calldata minters,
 		bytes calldata identifier
-	) external override onlyOwner returns (address) {
+	) external override returns (address) {
 		require(
 			sbtProxyMapping[identifier] == address(0),
 			"Identifier already used"
@@ -52,7 +54,7 @@ contract SBTFactory is ISBTFactory, OwnableUpgradeable {
 		sbtProxyMapping[identifier] = address(proxy);
 
 		// Initialize the proxy.
-		SBT(proxy).initialize(minterUpdater, minters);
+		SBT(proxy).initialize(sbtName, sbtSymbol, minterUpdater, minters);
 
 		return address(proxy);
 	}

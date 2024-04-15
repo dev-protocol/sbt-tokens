@@ -35,10 +35,12 @@ describe('SBTProxy', () => {
 		])
 		const sbt = sbtImplementation.attach(sbtProxy.address)
 		if (shouldAlsoInitializeProxy) {
-			await sbt.initialize(signers.minterUpdater.address, [
-				signers.minterA.address,
-				signers.minterB.address,
-			])
+			await sbt.initialize(
+				'Test SBT',
+				'TESTSBT',
+				signers.minterUpdater.address,
+				[signers.minterA.address, signers.minterB.address]
+			)
 		}
 
 		return { sbt, sbtImplementation, sbtProxy, sbtImplementationB }
@@ -316,6 +318,8 @@ describe('SBTProxy', () => {
 				const encodedData = sbtImplementationB
 					.connect(signers.minterUpdater)
 					.interface.encodeFunctionData('initialize', [
+						'Test SBT',
+						'TESTSBT',
 						signers.minterUpdater.address,
 						[signers.minterA.address, signers.minterB.address],
 					])
@@ -330,7 +334,7 @@ describe('SBTProxy', () => {
 				await expect(
 					sbt
 						.connect(signers.userA)
-						.initialize(signers.minterUpdater.address, [
+						.initialize('Test SBT', 'TESTSBT', signers.minterUpdater.address, [
 							signers.minterA.address,
 							signers.minterB.address,
 						])
@@ -353,6 +357,8 @@ describe('SBTProxy', () => {
 				const encodedData = sbtImplementationB
 					.connect(signers.minterUpdater)
 					.interface.encodeFunctionData('initialize', [
+						'Test SBT',
+						'TESTSBT',
 						signers.minterUpdater.address,
 						[signers.minterA.address, signers.minterB.address],
 					])
@@ -366,7 +372,7 @@ describe('SBTProxy', () => {
 				await expect(
 					sbt
 						.connect(signers.userA)
-						.initialize(signers.minterUpdater.address, [
+						.initialize('Test SBT', 'TESTSBT', signers.minterUpdater.address, [
 							signers.minterA.address,
 							signers.minterB.address,
 						])
@@ -374,7 +380,7 @@ describe('SBTProxy', () => {
 				await expect(
 					sbt
 						.connect(signers.userA)
-						.initialize(signers.minterUpdater.address, [
+						.initialize('Test SBT', 'TESTSBT', signers.minterUpdater.address, [
 							signers.minterA.address,
 							signers.minterB.address,
 						])
@@ -442,7 +448,7 @@ describe('SBTProxy', () => {
 				await expect(
 					sbt
 						.connect(proxyAdmin)
-						.initialize(constants.AddressZero, [
+						.initialize('Test SBT', 'TESTSBT', constants.AddressZero, [
 							constants.AddressZero,
 							constants.AddressZero,
 						])
@@ -454,7 +460,7 @@ describe('SBTProxy', () => {
 			it('The initialize function can only be executed once', async () => {
 				const { sbt } = await init()
 				await expect(
-					sbt.initialize(constants.AddressZero, [
+					sbt.initialize('Test SBT', 'TESTSBT', constants.AddressZero, [
 						constants.AddressZero,
 						constants.AddressZero,
 					])

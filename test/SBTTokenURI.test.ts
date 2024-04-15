@@ -13,7 +13,7 @@ describe('SBT', () => {
 	const init = async (): Promise<Contract> => {
 		const signers = await getSigners()
 		const sbt = await deploy('SBT')
-		await sbt.initialize(signers.minterUpdater.address, [
+		await sbt.initialize('Test SBT', 'TESTSBT', signers.minterUpdater.address, [
 			signers.minterA.address,
 			signers.minterB.address,
 		])
