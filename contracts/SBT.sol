@@ -115,13 +115,21 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 
 		(
 			string memory name,
+			string memory type_,
 			string memory description,
 			string memory tokenUriImage,
 			StringAttribute[] memory stringAttributes,
 			NumberAttribute[] memory numberAttributes
 		) = abi.decode(
 				metadataOf(tokenId),
-				(string, string, string, StringAttribute[], NumberAttribute[])
+				(
+					string,
+					string,
+					string,
+					string,
+					StringAttribute[],
+					NumberAttribute[]
+				)
 			);
 
 		bool isStringDataPresent = false;
@@ -192,7 +200,10 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 					abi
 						.encodePacked(
 							// solhint-disable-next-line quotes
-							'{"name":"',
+							'{"type":"',
+							type_,
+							// solhint-disable-next-line quotes
+							'","name":"',
 							name,
 							// solhint-disable-next-line quotes
 							'","description":"',
@@ -212,6 +223,7 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 
 	function encodeMetadata(
 		string memory name,
+		string memory type_,
 		string memory description,
 		StringAttribute[] memory stringAttributes,
 		NumberAttribute[] memory numberAttributes,
@@ -220,6 +232,7 @@ contract SBT is ISBT, ERC721EnumerableUpgradeable {
 		return
 			abi.encode(
 				name,
+				type_,
 				description,
 				tokenUriImage,
 				stringAttributes,

@@ -83,6 +83,7 @@ interface ISBT {
 	/*
 	 * @dev Get the NFT metadata in encoded format.
 	 * @param name The name of the NFT.
+	 * @param type_ The type of the NFT.
 	 * @param description The description of the NFT.
 	 * @param stringAttributes The array of all the string attributes.
 	 * @param numberAttributes The array of all the number attributes.
@@ -91,6 +92,7 @@ interface ISBT {
 	 */
 	function encodeMetadata(
 		string memory name,
+		string memory type_,
 		string memory description,
 		StringAttribute[] memory stringAttributes,
 		NumberAttribute[] memory numberAttributes,
